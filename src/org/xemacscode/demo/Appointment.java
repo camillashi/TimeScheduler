@@ -6,8 +6,20 @@
 package org.xemacscode.demo;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -46,15 +58,15 @@ public class Appointment extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        tfLocation = new javax.swing.JTextField();
+        tfParticipants = new javax.swing.JTextField();
         datechooserFrom = new com.toedter.calendar.JDateChooser();
         datechooserTo = new com.toedter.calendar.JDateChooser();
         timechooserFrom = new javax.swing.JComboBox<>();
         timechooserTo = new javax.swing.JComboBox<>();
         btnFileChoose = new javax.swing.JButton();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        priorityChooser = new javax.swing.JComboBox<>();
+        reminderChooser = new javax.swing.JComboBox<>();
         btnAddAppoint = new javax.swing.JButton();
         tfPathShow = new javax.swing.JTextField();
         btnBack = new javax.swing.JButton();
@@ -88,9 +100,13 @@ public class Appointment extends javax.swing.JFrame {
 
         jLabel13.setText("Time");
 
-        timechooserFrom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00AM", "06:30AM", "07:00AM", "07:30AM", "08:00AM", "08:30AM", "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00AM", "12:30AM", "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM", "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM", "09:30PM", "10:00PM", "10:30PM", "11:00PM", "11:30PM", "00:00AM", "00:30AM", "01:00AM", "01:30AM", "02:00AM", "02:30AM", "03:00AM", "03:30AM", "04:00AM", "04:30AM", "05:00AM", "05:30AM", " " }));
+        datechooserFrom.setDateFormatString("yyyy-MM-dd");
 
-        timechooserTo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00AM", "06:30AM", "07:00AM", "07:30AM", "08:00AM", "08:30AM", "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00AM", "12:30AM", "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM", "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM", "09:30PM", "10:00PM", "10:30PM", "11:00PM", "11:30PM", "00:00AM", "00:30AM", "01:00AM", "01:30AM", "02:00AM", "02:30AM", "03:00AM", "03:30AM", "04:00AM", "04:30AM", "05:00AM", "05:30AM", " " }));
+        datechooserTo.setDateFormatString("yyyy-MM-dd");
+
+        timechooserFrom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00 AM", "06:30 AM", "07:00 AM", "07:30 AM", "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 AM", "12:30 AM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM", "09:30 PM", "10:00 PM", "10:30 PM", "11:00 PM", "11:30 PM", "00:00 AM", "00:30 AM", "01:00 AM", "01:30 AM", "02:00 AM", "02:30 AM", "03:00 AM", "03:30 AM", "04:00 AM", "04:30 AM", "05:00 AM", "05:30 AM" }));
+
+        timechooserTo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00 AM", "06:30 AM", "07:00 AM", "07:30 AM", "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 AM", "12:30 AM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM", "09:30 PM", "10:00 PM", "10:30 PM", "11:00 PM", "11:30 PM", "00:00 AM", "00:30 AM", "01:00 AM", "01:30 AM", "02:00 AM", "02:30 AM", "03:00 AM", "03:30 AM", "04:00 AM", "04:30 AM", "05:00 AM", "05:30 AM" }));
 
         btnFileChoose.setText("Choose File...");
         btnFileChoose.addActionListener(new java.awt.event.ActionListener() {
@@ -99,9 +115,9 @@ public class Appointment extends javax.swing.JFrame {
             }
         });
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "low", "medium", "high" }));
+        priorityChooser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "low", "medium", "high" }));
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 week", "3 days", "1 hour", "10 minutes" }));
+        reminderChooser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 week", "3 days", "1 hour", "10 minutes" }));
 
         btnAddAppoint.setText("+add appointment");
         btnAddAppoint.addActionListener(new java.awt.event.ActionListener() {
@@ -138,10 +154,10 @@ public class Appointment extends javax.swing.JFrame {
                         .addGap(55, 55, 55)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jComboBox4, javax.swing.GroupLayout.Alignment.LEADING, 0, 105, Short.MAX_VALUE)
-                                .addComponent(jComboBox3, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(reminderChooser, javax.swing.GroupLayout.Alignment.LEADING, 0, 105, Short.MAX_VALUE)
+                                .addComponent(priorityChooser, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(tfParticipants, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(tfPathShow)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -204,11 +220,11 @@ public class Appointment extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfParticipants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -217,11 +233,11 @@ public class Appointment extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(priorityChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(reminderChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddAppoint)
@@ -270,9 +286,30 @@ public class Appointment extends javax.swing.JFrame {
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
         // TODO add your handling code here:
+        
         String name=tfName.getText();
-        Date dateFrom =(Date)datechooserFrom.getDate();
-        Date dateTO=(Date)datechooserTo.getDate();
+        java.sql.Date datefrom = (java.sql.Date) datechooserFrom.getDate();
+        java.sql.Date dateto = (java.sql.Date) datechooserTo.getDate();
+        String timefrom= (String)timechooserFrom.getSelectedItem();
+        String timeto= (String)timechooserTo.getSelectedItem();
+        String location=tfLocation.getText();
+        String participants=tfParticipants.getText();
+        
+        String priority= (String)priorityChooser.getSelectedItem();
+        String reminder= (String)reminderChooser.getSelectedItem();
+        
+        /*if(name.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"Fill in the name field.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        else if(datefrom==null)
+        {
+            JOptionPane.showMessageDialog(this,"No Date selected.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            addAppointment(name,datefrom,dateto,timefrom,timeto,location,participants,priority,reminder);
+        }*/
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
     private void btnFileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileChooseActionPerformed
@@ -330,8 +367,6 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JButton btnFileChoose;
     private com.toedter.calendar.JDateChooser datechooserFrom;
     private com.toedter.calendar.JDateChooser datechooserTo;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -347,11 +382,49 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JComboBox<String> priorityChooser;
+    private javax.swing.JComboBox<String> reminderChooser;
+    private javax.swing.JTextField tfLocation;
     private javax.swing.JTextField tfName;
+    private javax.swing.JTextField tfParticipants;
     private javax.swing.JTextField tfPathShow;
     private javax.swing.JComboBox<String> timechooserFrom;
     private javax.swing.JComboBox<String> timechooserTo;
     // End of variables declaration//GEN-END:variables
+
+    /*private void addAppointment(String name, java.sql.Date datefrom, java.sql.Date dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
+        Connection dbconn=DBConnection.connectDB();
+        if(dbconn!=null)
+        {
+        try
+        {
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,username) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
+            
+            st.setString(1,name);
+            st.setString(2,datefrom.toString());
+            st.setString(3,dateto.toString());
+            st.setString(4,timefrom);
+            st.setString(5,timeto);
+            st.setString(6,location);
+            st.setString(7,participants);
+            st.setString(9,priority);
+            st.setString(10,reminder);
+            st.setString(11,username);
+            
+            int res=st.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this,"New Account created.","Success",JOptionPane.INFORMATION_MESSAGE);
+            
+        }
+        catch(SQLException ex)
+        {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        }
+        else
+        {
+            System.out.println("The connection not available.");
+        }
+    }*/
 }
+
