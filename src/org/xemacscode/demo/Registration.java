@@ -8,6 +8,7 @@ package org.xemacscode.demo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -314,9 +315,17 @@ public class Registration extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this,"Check Password Confirmation.","Error",JOptionPane.ERROR_MESSAGE);
         }
-        else
-        {
-            userRegister(fname,lname,uname,mail,password);
+        else try {
+            if(checkUsername(uname))
+            {
+                JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                userRegister(fname,lname,uname,mail,password);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -342,6 +351,23 @@ public class Registration extends javax.swing.JFrame {
         l.setVisible(true);
     }//GEN-LAST:event_jLabel_Reg_LoginMouseClicked
 
+    public boolean checkUsername(String uname) throws SQLException
+    {
+        PreparedStatement st;
+        ResultSet rs;
+        boolean username_exist=false;
+        String query="SELECT * FROM users WHERE username = ?";
+        
+        st=DBConnection.connectDB().prepareStatement(query);
+        st.setString(1,uname);
+        rs=st.executeQuery();
+        if(rs.next())
+        {
+            username_exist=true;
+            //JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        return username_exist;
+    }
     /**
      * @param args the command line arguments
      */
