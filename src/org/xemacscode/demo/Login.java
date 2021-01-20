@@ -5,6 +5,7 @@
  */
 package org.xemacscode.demo;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.util.logging.Level;
@@ -336,6 +337,14 @@ public class Login extends javax.swing.JFrame {
                 c.setTitle("Calendar");
                 c.setLocationRelativeTo(null);
                 c.setVisible(true);
+                
+                Statement stmt=(Statement) dbconn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE username");
+                while(rs.next())
+                {
+                    int id= rs.getInt("id");
+                    System.out.println(id);
+                }
             }
             else
             {
