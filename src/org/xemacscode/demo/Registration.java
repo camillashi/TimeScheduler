@@ -320,6 +320,10 @@ public class Registration extends javax.swing.JFrame {
             {
                 JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
             }
+            else if(checkEmail(mail))
+            {
+                JOptionPane.showMessageDialog(null,"Email already exist.","Error",JOptionPane.ERROR_MESSAGE);
+            }
             else
             {
                 userRegister(fname,lname,uname,mail,password);
@@ -367,6 +371,24 @@ public class Registration extends javax.swing.JFrame {
             //JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
         }
         return username_exist;
+    }
+    
+    public boolean checkEmail(String mail) throws SQLException
+    {
+        PreparedStatement st;
+        ResultSet rs;
+        boolean email_exist=false;
+        String query="SELECT * FROM users WHERE email = ?";
+        
+        st=DBConnection.connectDB().prepareStatement(query);
+        st.setString(1,mail);
+        rs=st.executeQuery();
+        if(rs.next())
+        {
+            email_exist=true;
+            //JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        return email_exist;
     }
     /**
      * @param args the command line arguments
