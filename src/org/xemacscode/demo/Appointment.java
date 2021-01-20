@@ -351,12 +351,13 @@ public class Appointment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
-        // TODO add your handling code here:
-        /*DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        // TODO add your handling code here
         
         String name=tfName.getText();
-        String datefrom = datechooserFrom.getDate().toString().format(DateTimeFormatter.ofPattern("yyyy MM dd"));
-        String dateto = datechooserTo.getValue().toString().format(DateTimeFormatter.ofPattern("yyyy MM dd"));
+        //Date datefrom1 = ((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();
+        //Date dateto1 = datechooserTo.getDate();
+        String datefrom=((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();;
+        String dateto=((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();;
         //java.sql.Date datefrom =java.sql.Date.valueOf(datechooserFrom.getValue());
         //java.sql.Date dateto =java.sql.Date.valueOf(datechooserFrom.getValue());
         String timefrom= (String)timechooserFrom.getSelectedItem();
@@ -378,7 +379,7 @@ public class Appointment extends javax.swing.JFrame {
         else
         {
             addAppointment(name,datefrom,dateto,timefrom,timeto,location,participants,priority,reminder);
-        }*/
+        }
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
     private void btnFileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileChooseActionPerformed
@@ -532,17 +533,18 @@ public class Appointment extends javax.swing.JFrame {
     
     // APPOINTMENT MIT DATEDATENTYP: String
     
-    /*private void addAppointment(String name, String datefrom, String dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
+    private void addAppointment(String name, String datefrom, String dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
         Connection dbconn=DBConnection.connectDB();
         if(dbconn!=null)
         {
         try
         {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement
+            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
             
             st.setString(1,name);
-            st.setDate(2,(JTextField)datefrom.getDateEditor().getUiComponent().getText());
-            st.setDate(3,(JTextField)dateto.getDateEditor().getUiComponent().getText());
+            st.setString(2,datefrom);
+            st.setString(3,dateto);
             st.setString(4,timefrom);
             st.setString(5,timeto);
             st.setString(6,location);
@@ -557,7 +559,7 @@ public class Appointment extends javax.swing.JFrame {
                 }
                 else
                 {
-                    st.setNull(6,java.sql.Types.NULL);
+                    st.setNull(8,java.sql.Types.NULL);
                 }
             }
             catch(FileNotFoundException ex)
@@ -582,6 +584,6 @@ public class Appointment extends javax.swing.JFrame {
         {
             System.out.println("The connection not available.");
         }
-    }*/
+    }
 }
 
