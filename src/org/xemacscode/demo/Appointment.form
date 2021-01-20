@@ -103,13 +103,6 @@
                               </Group>
                               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="reminderChooser" alignment="0" pref="105" max="32767" attributes="0"/>
-                                          <Component id="priorityChooser" alignment="0" max="32767" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="77" max="32767" attributes="0"/>
-                                  </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Component id="tfPathShow" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -117,6 +110,10 @@
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="reminderChooser" alignment="0" pref="105" max="32767" attributes="0"/>
+                                              <Component id="priorityChooser" alignment="0" max="32767" attributes="0"/>
+                                          </Group>
                                           <Component id="tfParticipants" min="-2" pref="167" max="-2" attributes="0"/>
                                           <Component id="tfLocation" min="-2" pref="167" max="-2" attributes="0"/>
                                       </Group>
@@ -456,11 +453,12 @@
             <Component class="javax.swing.JComboBox" name="reminderChooser">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="1 week"/>
-                    <StringItem index="1" value="3 days"/>
-                    <StringItem index="2" value="1 hour"/>
-                    <StringItem index="3" value="10 minutes"/>
+                  <StringArray count="5">
+                    <StringItem index="0" value="no reminder"/>
+                    <StringItem index="1" value="1 week"/>
+                    <StringItem index="2" value="3 days"/>
+                    <StringItem index="3" value="1 hour"/>
+                    <StringItem index="4" value="10 minutes"/>
                   </StringArray>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
