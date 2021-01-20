@@ -352,11 +352,13 @@ public class Appointment extends javax.swing.JFrame {
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
         // TODO add your handling code here:
-        /*Dateformat format=new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         
         String name=tfName.getText();
-        java.sql.Date datefrom = datechooserFrom.getValue().toString().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        java.sql.Date dateto = datechooserTo.getValue().toString().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        //String datefrom = datechooserFrom.getValue().toString().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        //String dateto = datechooserTo.getValue().toString().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        java.sql.Date datefrom =java.sql.Date.valueOf(datechooserFrom.getValue());
+        java.sql.Date dateto =java.sql.Date.valueOf(datechooserFrom.getValue());
         String timefrom= (String)timechooserFrom.getSelectedItem();
         String timeto= (String)timechooserTo.getSelectedItem();
         String location=tfLocation.getText();
@@ -376,7 +378,7 @@ public class Appointment extends javax.swing.JFrame {
         else
         {
             addAppointment(name,datefrom,dateto,timefrom,timeto,location,participants,priority,reminder);
-        }*/
+        }
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
     private void btnFileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileChooseActionPerformed
@@ -472,15 +474,71 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> timechooserTo;
     // End of variables declaration//GEN-END:variables
 
-    /*private void addAppointment
-        (String name, java.sql.Date datefrom, java.sql.Date dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
+    
+    
+    // APPOINTMENT MIT DATE DATENTYP: java.sql.Date
+    private void addAppointment(String name, java.sql.Date datefrom, java.sql.Date dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
         Connection dbconn=DBConnection.connectDB();
         if(dbconn!=null)
         {
         try
         {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement
-                ("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
+            
+            st.setString(1,name);
+            st.setDate(2,(JTextField)datefrom.getDateEditor().getUiComponent().getText());
+            st.setDate(3,(JTextField)dateto.getDateEditor().getUiComponent().getText());
+            st.setString(4,timefrom);
+            st.setString(5,timeto);
+            st.setString(6,location);
+            st.setString(7,participants);
+            try
+            {
+                if(file_path!=null)
+                {
+                    InputStream file=new FileInputStream(new File(file_path));
+                    st.setBlob(8, file);
+                    
+                }
+                else
+                {
+                    st.setNull(6,java.sql.Types.NULL);
+                }
+            }
+            catch(FileNotFoundException ex)
+            {
+                Logger.getLogger(Registration.class.getName()).log(Level.SEVERE,null,ex);
+            }
+            
+            st.setString(9,priority);
+            st.setString(10,reminder);
+            
+            int res=st.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this,"Appointment added.","Success",JOptionPane.INFORMATION_MESSAGE);
+            
+        }
+        catch(SQLException ex)
+        {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        }
+        else
+        {
+            System.out.println("The connection not available.");
+        }
+    }
+    
+    
+    // APPOINTMENT MIT DATEDATENTYP: String
+    
+    /*private void addAppointment(String name, String datefrom, String dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
+        Connection dbconn=DBConnection.connectDB();
+        if(dbconn!=null)
+        {
+        try
+        {
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
             
             st.setString(1,name);
             st.setDate(2,(JTextField)datefrom.getDateEditor().getUiComponent().getText());
