@@ -20,6 +20,8 @@ import javax.swing.JFrame;
  * @author camil
  */
 public class Login extends javax.swing.JFrame {
+    
+    static int id;
 
     /**
      * Creates new form Login
@@ -266,7 +268,12 @@ public class Login extends javax.swing.JFrame {
     private void jButton_Reg_CancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Reg_CancelMouseClicked
         System.exit(0);  // Close window
     }//GEN-LAST:event_jButton_Reg_CancelMouseClicked
-
+    
+    
+    public static int getId()
+    {
+        return id; //transfer id to another class
+    }
     /**
      * @param args the command line arguments
      */
@@ -339,11 +346,11 @@ public class Login extends javax.swing.JFrame {
                 c.setVisible(true);
                 
                 Statement stmt=(Statement) dbconn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE username");
+                ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE username ='"+tfUsername.getText()+"'");
+                
                 while(rs.next())
                 {
-                    int id= rs.getInt("id");
-                    System.out.println(id);
+                    id= rs.getInt("id");
                 }
             }
             else

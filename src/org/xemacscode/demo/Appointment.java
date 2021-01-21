@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.DateFormat;
@@ -540,7 +541,7 @@ public class Appointment extends javax.swing.JFrame {
         try
         {
             PreparedStatement st=(PreparedStatement)dbconn.prepareStatement
-            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
+            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?k)");
             
             st.setString(1,name);
             st.setString(2,datefrom);
@@ -569,6 +570,7 @@ public class Appointment extends javax.swing.JFrame {
             
             st.setString(9,priority);
             st.setString(10,reminder);
+            st.setInt(11, Login.getId());
             
             int res=st.executeUpdate();
             
