@@ -541,7 +541,7 @@ public class Appointment extends javax.swing.JFrame {
         try
         {
             PreparedStatement st=(PreparedStatement)dbconn.prepareStatement
-            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?k)");
+            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
             
             st.setString(1,name);
             st.setString(2,datefrom);
