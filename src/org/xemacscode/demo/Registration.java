@@ -333,6 +333,7 @@ public class Registration extends javax.swing.JFrame {
         }
         
         
+        
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     private void btn_Reg_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Reg_CancelActionPerformed
@@ -468,6 +469,12 @@ public class Registration extends javax.swing.JFrame {
             int res=st.executeUpdate();
             
             JOptionPane.showMessageDialog(this,"New Account created.","Success",JOptionPane.INFORMATION_MESSAGE);
+            
+            dispose();
+            Calendar c=new Calendar();
+            c.setTitle("Calendar");
+            c.setLocationRelativeTo(null);
+            c.setVisible(true);
             
         }
         catch(SQLException ex)

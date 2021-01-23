@@ -274,10 +274,11 @@ public class Appointment extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(tfParticipants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(btnFileChoose)
-                    .addComponent(jLabel_ShowPath, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_ShowPath, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(btnFileChoose)))
                 .addGap(14, 14, 14)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -543,8 +544,7 @@ public class Appointment extends javax.swing.JFrame {
         {
         try
         {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement
-            ("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
             
             st.setString(1,name);
             st.setString(2,datefrom);
@@ -578,6 +578,8 @@ public class Appointment extends javax.swing.JFrame {
             int res=st.executeUpdate();
             
             JOptionPane.showMessageDialog(this,"Appointment added.","Success",JOptionPane.INFORMATION_MESSAGE);
+            
+            dispose();
             
         }
         catch(SQLException ex)

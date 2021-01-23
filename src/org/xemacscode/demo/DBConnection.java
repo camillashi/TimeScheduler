@@ -20,7 +20,7 @@ public class DBConnection {
             //Class.forName("com.mysql.jdbc.Driver");
             conn=DriverManager.getConnection(DB_URL,USER,PASS);
             return conn;
-        }catch(Exception ex)
+        }catch(SQLException ex)
         {
             System.out.println("There were errors while connecting to db.");
             return null;
