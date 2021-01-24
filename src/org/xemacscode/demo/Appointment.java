@@ -557,7 +557,7 @@ public class Appointment extends javax.swing.JFrame {
             sb.append(String.format("Participants: %s \n", participants));
         }
         sb.append(String.format("Priority: %s \n\n", priority));
-        sb.append(String.format("Enjoy your meeting!\n", priority));
+        sb.append("Enjoy your meeting!\n");
         sb.append(String.format("Planned with: JavaTimeScheduler\n", priority));
         return sb.toString();
     }
