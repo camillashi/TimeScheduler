@@ -5,20 +5,33 @@
  */
 package org.xemacscode.demo;
 
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Julia
  */
 public class Admin extends javax.swing.JFrame {
+    
+    int q, selectedrow,id;
 
     /**
      * Creates new form Admin
      */
     public Admin() {
         initComponents();
-        this.setLocationRelativeTo(null); // Admin screen is shown in the center
+        this.setLocationRelativeTo(null);// Admin screen is shown in the center
+        showTableData();
     }
 
     /**
@@ -32,10 +45,10 @@ public class Admin extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        adminTable = new javax.swing.JTable();
+        btnUpdate = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -49,8 +62,8 @@ public class Admin extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(107, 184, 240));
 
-        jTable1.setBackground(new java.awt.Color(153, 153, 153));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        adminTable.setBackground(new java.awt.Color(153, 153, 153));
+        adminTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -64,25 +77,30 @@ public class Admin extends javax.swing.JFrame {
                 "id", "firstname", "lastname", "username", "email", "password"
             }
         ));
-        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jTable1.setSelectionForeground(new java.awt.Color(153, 153, 153));
-        jScrollPane1.setViewportView(jTable1);
+        adminTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        adminTable.setSelectionForeground(new java.awt.Color(153, 153, 153));
+        adminTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                adminTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(adminTable);
 
-        jButton1.setText("show Accounts");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setText("Update");
+        btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
 
         jPanel4.setBackground(new java.awt.Color(37, 116, 169));
 
-        jButton2.setText("delete User");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("delete User");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -102,7 +120,7 @@ public class Admin extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
         );
         jPanel4Layout.setVerticalGroup(
@@ -110,7 +128,7 @@ public class Admin extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btnDelete)
                     .addComponent(jButton3))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
@@ -174,7 +192,7 @@ public class Admin extends javax.swing.JFrame {
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
@@ -195,7 +213,7 @@ public class Admin extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
                     .addComponent(jButton5)
-                    .addComponent(jButton1))
+                    .addComponent(btnUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -222,48 +240,108 @@ public class Admin extends javax.swing.JFrame {
         this.setState(JFrame.ICONIFIED);  // minimize the screen
     }//GEN-LAST:event_jLabel4MouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        DefaultTableModel RecordTable=(DefaultTableModel)adminTable.getModel();
+        selectedrow=adminTable.getSelectedRow();
+        
+        try
+        {
+            id = Integer.parseInt(RecordTable.getValueAt(selectedrow,0).toString());
+            Connection dbconn=DBConnection.connectDB();
+            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("delete from users WHERE id = ?");
+            st.setInt(1, id);
+            st.executeUpdate();
+            showTableData();
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton3MouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         
-       // try{
-        // open connection
-        // ClassforName("com.mysql.jdbc.Driver");
-        // Connection con = DriverManager.getConnection("jdbc:mysql://localhost/mytimescheduler","root","");
+        //Camillas version:
+        showTableData();
         
-        // Statement st = con.createStatement();
-        // mysql query
-        // String sql = "select * from user";
-        // Resultset rs = st.executeQuery(sql);
         
-        //while(rs.next()){
-            //data will be added until finish
-            //String id = String.valueOf(rs.getInt("id"));
-            //String username = rs.getString("username");
+       /*try{
+           open connection
+           ClassforName("com.mysql.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost/mytimescheduler","root","");
+        
+           Statement st = con.createStatement();
+           mysql query
+           String sql = "select * from user";
+           Resultset rs = st.executeQuery(sql);
+        
+          while(rs.next()){
+              data will be added until finish
+              String id = String.valueOf(rs.getInt("id"));
+              String username = rs.getString("username");
             
-            //string array for store data into jtable
-            //String tbData[] = (id,username,password);
-            //DefaultTableModel tblModel = (DefaultTableModel)jTable1.getModel();
+              string array for store data into jtable
+              String tbData[] = (id,username,password);
+              DefaultTableModel tblModel = (DefaultTableModel)jTable1.getModel();
             
-            //add string array data into jtable
-            //tblModel.addRow(tbData);
+              add string array data into jtable
+              tblModel.addRow(tbData);
             
-        //}
+        }
         
-        //con.close();
-        //}catch(Exception e){
-         //   System.out.println(e.getMessage());
-        //}
+        con.close();
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+        }*/
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
+    private void adminTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminTableMouseClicked
+        DefaultTableModel RecordTable=(DefaultTableModel)adminTable.getModel();
+        selectedrow=adminTable.getSelectedRow();
+    }//GEN-LAST:event_adminTableMouseClicked
+
+    
+    public void showTableData()
+    {
+        Connection dbconn=DBConnection.connectDB();
+        if(dbconn!=null)
+        {
+            try {
+                Statement stmt=(Statement) dbconn.createStatement();
+                ResultSet rs = stmt.executeQuery("select * from users");
+                
+                ResultSetMetaData stData=(ResultSetMetaData) rs.getMetaData();
+                
+                q=stData.getColumnCount();
+                DefaultTableModel RecordTable=(DefaultTableModel)adminTable.getModel();
+                RecordTable.setRowCount(0);
+                while(rs.next())
+                {
+                    
+                    Vector columnData=new Vector();
+                    for(int i=1;i<=q;i++)
+                    {
+                        columnData.add(rs.getString("id"));
+                        columnData.add(rs.getString("firstname"));
+                        columnData.add(rs.getString("lastname"));
+                        columnData.add(rs.getString("username"));
+                        columnData.add(rs.getString("email"));
+                        columnData.add(rs.getString("password"));
+                    }
+                    RecordTable.addRow(columnData);
+                    
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -300,8 +378,9 @@ public class Admin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTable adminTable;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -312,6 +391,5 @@ public class Admin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

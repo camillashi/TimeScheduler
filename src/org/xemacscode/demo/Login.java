@@ -266,7 +266,6 @@ public class Login extends javax.swing.JFrame {
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
         dispose(); //cleanup window
         Registration r=new Registration(); //open Registration
-        r.setTitle("Register a new User.");
         r.setLocationRelativeTo(null);
         r.setVisible(true);
     }//GEN-LAST:event_jLabel6MouseClicked
@@ -333,47 +332,57 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
-    private void userLogin(String username, String password) throws NoSuchAlgorithmException {
-        Connection dbconn=DBConnection.connectDB();
-        if(dbconn!=null)
+    private void userLogin(String username, String password) throws NoSuchAlgorithmException 
+    {
+        if("admin".equals(username)&&"admin".equals(password))
         {
-        try
-        {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("Select * from users WHERE username = ? AND password = ?");//To change body of generated methods, choose Tools | Templates.
-            
-            st.setString(1,username);
-            st.setString(2,EncryptionService.hashPassword(password));
-            ResultSet res=st.executeQuery();
-            if(res.next())
-            {
-                dispose();
-                Calendar c=new Calendar();
-                c.setTitle("Calendar");
-                c.setLocationRelativeTo(null);
-                c.setVisible(true);
-                
-                Statement stmt=(Statement) dbconn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT id,email FROM users WHERE username ='"+tfUsername.getText()+"'");
-                
-                while(rs.next())
-                {
-                    UserProvider.setId(rs.getInt("id"));
-                    UserProvider.setEmail(rs.getString("email"));
-                }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this,"Username/Password not found.","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        catch(SQLException ex)
-        {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
-        }
+            dispose();
+            Admin a=new Admin();
+            a.setLocationRelativeTo(null);
+            a.setVisible(true);
         }
         else
         {
-            System.out.println("The connection not available.");
+            Connection dbconn=DBConnection.connectDB();
+            if(dbconn!=null)
+            {
+                try
+                {
+                    PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("Select * from users WHERE username = ? AND password = ?");//To change body of generated methods, choose Tools | Templates.
+        
+                    st.setString(1,username);
+                    st.setString(2,EncryptionService.hashPassword(password));
+                    ResultSet res=st.executeQuery();
+                    if(res.next())
+                    {
+                        dispose();
+                        Calendar c=new Calendar();
+                        c.setLocationRelativeTo(null);
+                        c.setVisible(true);
+                
+                        Statement stmt=(Statement) dbconn.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT id,email FROM users WHERE username ='"+tfUsername.getText()+"'");
+                
+                        while(rs.next())
+                        {
+                            UserProvider.setId(rs.getInt("id"));
+                            UserProvider.setEmail(rs.getString("email"));
+                        }
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this,"Username/Password not found.","Error",JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                catch(SQLException ex)
+                {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
+                }
+                }
+                else
+                {
+                    System.out.println("The connection not available.");
+            }
         }
     }
 }

@@ -57,11 +57,11 @@ public class Registration extends javax.swing.JFrame {
         tfFname = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         btnRegister = new javax.swing.JButton();
-        btn_Reg_Cancel = new javax.swing.JButton();
-        jLabel_Reg_Login = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
+        btnBackToLogin = new javax.swing.JLabel();
         jLabel_Registration = new javax.swing.JLabel();
-        jLabel_HideScreen = new javax.swing.JLabel();
-        jLabel_ExitScreen = new javax.swing.JLabel();
+        btnMinimize = new javax.swing.JLabel();
+        btnClose = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -121,19 +121,19 @@ public class Registration extends javax.swing.JFrame {
             }
         });
 
-        btn_Reg_Cancel.setText("cancel");
-        btn_Reg_Cancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_Reg_Cancel.addActionListener(new java.awt.event.ActionListener() {
+        btnCancel.setText("cancel");
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_Reg_CancelActionPerformed(evt);
+                btnCancelActionPerformed(evt);
             }
         });
 
-        jLabel_Reg_Login.setText("Already have an account? click here");
-        jLabel_Reg_Login.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel_Reg_Login.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnBackToLogin.setText("Already have an account? click here");
+        btnBackToLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBackToLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_Reg_LoginMouseClicked(evt);
+                btnBackToLoginMouseClicked(evt);
             }
         });
 
@@ -143,13 +143,13 @@ public class Registration extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(63, 63, 63)
-                .addComponent(btn_Reg_Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_Reg_Login)
+                .addComponent(btnBackToLogin)
                 .addGap(136, 136, 136))
         );
         jPanel3Layout.setVerticalGroup(
@@ -158,9 +158,9 @@ public class Registration extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRegister)
-                    .addComponent(btn_Reg_Cancel))
+                    .addComponent(btnCancel))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel_Reg_Login)
+                .addComponent(btnBackToLogin)
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -229,21 +229,21 @@ public class Registration extends javax.swing.JFrame {
         jLabel_Registration.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Registration.setText("Registration");
 
-        jLabel_HideScreen.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel_HideScreen.setText("-");
-        jLabel_HideScreen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel_HideScreen.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnMinimize.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnMinimize.setText("-");
+        btnMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_HideScreenMouseClicked(evt);
+                btnMinimizeMouseClicked(evt);
             }
         });
 
-        jLabel_ExitScreen.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel_ExitScreen.setText("X");
-        jLabel_ExitScreen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel_ExitScreen.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnClose.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnClose.setText("X");
+        btnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_ExitScreenMouseClicked(evt);
+                btnCloseMouseClicked(evt);
             }
         });
 
@@ -256,9 +256,9 @@ public class Registration extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel_Registration)
                 .addGap(102, 102, 102)
-                .addComponent(jLabel_HideScreen)
+                .addComponent(btnMinimize)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel_ExitScreen)
+                .addComponent(btnClose)
                 .addGap(22, 22, 22))
         );
         jPanel1Layout.setVerticalGroup(
@@ -268,8 +268,8 @@ public class Registration extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel_HideScreen)
-                            .addComponent(jLabel_ExitScreen)))
+                            .addComponent(btnMinimize)
+                            .addComponent(btnClose)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(jLabel_Registration)))
@@ -338,25 +338,25 @@ public class Registration extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnRegisterActionPerformed
 
-    private void btn_Reg_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Reg_CancelActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
         System.exit(0);
-    }//GEN-LAST:event_btn_Reg_CancelActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void jLabel_HideScreenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_HideScreenMouseClicked
+    private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimizeMouseClicked
         this.setState(JFrame.ICONIFIED);  // minimize the screen
-    }//GEN-LAST:event_jLabel_HideScreenMouseClicked
+    }//GEN-LAST:event_btnMinimizeMouseClicked
 
-    private void jLabel_ExitScreenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_ExitScreenMouseClicked
+    private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
         System.exit(0); //close the Login window
-    }//GEN-LAST:event_jLabel_ExitScreenMouseClicked
+    }//GEN-LAST:event_btnCloseMouseClicked
 
-    private void jLabel_Reg_LoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_Reg_LoginMouseClicked
+    private void btnBackToLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackToLoginMouseClicked
         dispose();
         Login l=new Login();
         l.setLocationRelativeTo(null);
         l.setVisible(true);
-    }//GEN-LAST:event_jLabel_Reg_LoginMouseClicked
+    }//GEN-LAST:event_btnBackToLoginMouseClicked
 
     public boolean checkUsername(String uname) throws SQLException
     {
@@ -429,15 +429,15 @@ public class Registration extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel btnBackToLogin;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JLabel btnClose;
+    private javax.swing.JLabel btnMinimize;
     private javax.swing.JButton btnRegister;
-    private javax.swing.JButton btn_Reg_Cancel;
-    private javax.swing.JLabel jLabel_ExitScreen;
-    private javax.swing.JLabel jLabel_HideScreen;
     private javax.swing.JLabel jLabel_Reg_Email;
     private javax.swing.JLabel jLabel_Reg_EmailConfirmation;
     private javax.swing.JLabel jLabel_Reg_FirstName;
     private javax.swing.JLabel jLabel_Reg_LastName;
-    private javax.swing.JLabel jLabel_Reg_Login;
     private javax.swing.JLabel jLabel_Reg_Password;
     private javax.swing.JLabel jLabel_Reg_PasswordConfirmation;
     private javax.swing.JLabel jLabel_Reg_Username;
@@ -468,13 +468,12 @@ public class Registration extends javax.swing.JFrame {
             st.setString(4,mail);
             st.setString(5,EncryptionService.hashPassword(password));
             
-            int res=st.executeUpdate();
+            st.executeUpdate();
             
             JOptionPane.showMessageDialog(this,"New Account created.","Success",JOptionPane.INFORMATION_MESSAGE);
             
             dispose();
             Login loginwindow=new Login();
-            loginwindow.setTitle("Login");
             loginwindow.setLocationRelativeTo(null);
             loginwindow.setVisible(true);
             
