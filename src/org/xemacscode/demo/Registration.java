@@ -5,6 +5,7 @@
  */
 package org.xemacscode.demo;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,13 +14,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.xemacscode.demo.security.EncryptionService;
 
 /**
  *
  * @author camil
  */
 public class Registration extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form Registration
      */
@@ -328,8 +330,8 @@ public class Registration extends javax.swing.JFrame {
             {
                 userRegister(fname,lname,uname,mail,password);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | NoSuchAlgorithmException ex) {
+                JOptionPane.showMessageDialog(this,"Something went wrong, please try again!","Error",JOptionPane.ERROR_MESSAGE);
         }
         
         
@@ -452,7 +454,7 @@ public class Registration extends javax.swing.JFrame {
     private javax.swing.JTextField tfUname;
     // End of variables declaration//GEN-END:variables
 
-    private void userRegister(String fname, String lname, String uname, String mail, String password) {
+    private void userRegister(String fname, String lname, String uname, String mail, String password) throws NoSuchAlgorithmException {
         Connection dbconn=DBConnection.connectDB();
         if(dbconn!=null)
         {
@@ -464,17 +466,17 @@ public class Registration extends javax.swing.JFrame {
             st.setString(2,lname);
             st.setString(3,uname);
             st.setString(4,mail);
-            st.setString(5,password);
+            st.setString(5,EncryptionService.hashPassword(password));
             
             int res=st.executeUpdate();
             
             JOptionPane.showMessageDialog(this,"New Account created.","Success",JOptionPane.INFORMATION_MESSAGE);
             
             dispose();
-            Calendar c=new Calendar();
-            c.setTitle("Calendar");
-            c.setLocationRelativeTo(null);
-            c.setVisible(true);
+            Login loginwindow=new Login();
+            loginwindow.setTitle("Login");
+            loginwindow.setLocationRelativeTo(null);
+            loginwindow.setVisible(true);
             
         }
         catch(SQLException ex)

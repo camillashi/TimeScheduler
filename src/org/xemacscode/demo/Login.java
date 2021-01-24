@@ -5,6 +5,7 @@
  */
 package org.xemacscode.demo;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -14,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import javax.swing.JFrame;
+import org.xemacscode.demo.security.EncryptionService;
 
 /**
  *
@@ -245,7 +247,11 @@ public class Login extends javax.swing.JFrame {
         }
         else
         {
-            userLogin(username,password); //new method, look at bottom
+            try {
+                userLogin(username,password); //new method, look at bottom
+            } catch (NoSuchAlgorithmException ex) {
+                JOptionPane.showMessageDialog(this,"Something went wrong, please try again!","Error",JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
@@ -326,7 +332,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
-    private void userLogin(String username, String password) {
+    private void userLogin(String username, String password) throws NoSuchAlgorithmException {
         Connection dbconn=DBConnection.connectDB();
         if(dbconn!=null)
         {
@@ -335,7 +341,7 @@ public class Login extends javax.swing.JFrame {
             PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("Select * from users WHERE username = ? AND password = ?");//To change body of generated methods, choose Tools | Templates.
             
             st.setString(1,username);
-            st.setString(2,password);
+            st.setString(2,EncryptionService.hashPassword(password));
             ResultSet res=st.executeQuery();
             if(res.next())
             {
