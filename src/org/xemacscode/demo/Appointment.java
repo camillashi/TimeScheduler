@@ -501,15 +501,15 @@ public class Appointment extends javax.swing.JFrame {
 
                 st.setString(9, priority);
                 st.setString(10, reminder);
-                st.setInt(11, Login.getId());
+                st.setInt(11, UserProvider.getId());
 
                 st.executeUpdate();
 
                 List<String> recipients;
                 if (participants.isBlank()) {
-                    recipients = List.of(Login.getEmail());
+                    recipients = List.of(UserProvider.getEmail());
                 } else {
-                    recipients = Arrays.asList((participants + "," + Login.getEmail()).split(","));
+                    recipients = Arrays.asList((participants + "," + UserProvider.getEmail()).split(","));
                 }
 
                 String message = getMessage(datefrom, dateto, timefrom, timeto, location, participants, priority);

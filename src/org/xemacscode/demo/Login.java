@@ -14,17 +14,16 @@ import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.Timer;
 import javax.swing.JFrame;
 import org.xemacscode.demo.security.EncryptionService;
+import org.xemacscode.demo.task.Reminder;
 
 /**
  *
  * @author camil
  */
 public class Login extends javax.swing.JFrame {
-    
-    static int id;
-    static String email;
 
     /**
      * Creates new form Login
@@ -276,16 +275,6 @@ public class Login extends javax.swing.JFrame {
         System.exit(0);  // Close window
     }//GEN-LAST:event_jButton_Reg_CancelMouseClicked
     
-    
-    public static int getId()
-    {
-        return id; //transfer id to another class
-    }
-    
-    public static String getEmail()
-    {
-        return email; //transfer id to another class
-    }
     /**
      * @param args the command line arguments
      */
@@ -313,6 +302,12 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        
+        
+        Timer t = new Timer();
+        Reminder mTask = new Reminder();
+
+        t.scheduleAtFixedRate(mTask, 0, 60000);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -362,8 +357,8 @@ public class Login extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    id= rs.getInt("id");
-                    email= rs.getString("email");
+                    UserProvider.setId(rs.getInt("id"));
+                    UserProvider.setEmail(rs.getString("email"));
                 }
             }
             else

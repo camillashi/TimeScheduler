@@ -159,7 +159,7 @@ public class Calendar extends javax.swing.JFrame {
             calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
             LocalDate startOfWeek = LocalDate.ofInstant(calendar.getTime().toInstant(), ZoneId.systemDefault());
             LocalDate endOfWeek = startOfWeek.plusDays(7);
-            Integer userId = Login.getId();
+            Integer userId = UserProvider.getId();
 
             Connection dbconn = DBConnection.connectDB();
             final Date dateStartOfWeek = Date.valueOf(startOfWeek);
