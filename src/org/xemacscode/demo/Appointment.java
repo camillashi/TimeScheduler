@@ -5,27 +5,23 @@
  */
 package org.xemacscode.demo;
 
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
@@ -36,9 +32,8 @@ public class Appointment extends javax.swing.JFrame {
     /**
      * Creates new form Appointment
      */
-    
-    String file_path=null;
-    
+    String file_path = null;
+
     public Appointment() {
         initComponents();
         this.setLocationRelativeTo(null); // Appointment screen is shown in the center
@@ -116,14 +111,14 @@ public class Appointment extends javax.swing.JFrame {
 
         jLabel13.setText("Time");
 
-        datechooserFrom.setDateFormatString("yyyy MM dd");
+        datechooserFrom.setDateFormatString("yyyy-MM-dd");
 
-        datechooserTo.setDateFormatString("yyyy MM dd");
+        datechooserTo.setDateFormatString("yyyy-MM-dd");
 
-        timechooserFrom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00 AM", "06:30 AM", "07:00 AM", "07:30 AM", "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 AM", "12:30 AM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM", "09:30 PM", "10:00 PM", "10:30 PM", "11:00 PM", "11:30 PM", "00:00 AM", "00:30 AM", "01:00 AM", "01:30 AM", "02:00 AM", "02:30 AM", "03:00 AM", "03:30 AM", "04:00 AM", "04:30 AM", "05:00 AM", "05:30 AM" }));
+        timechooserFrom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "6:00", "6:30", "7:00", "7:30", "8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "0:00", "0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30", "5:00", "5:30" }));
         timechooserFrom.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        timechooserTo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "06:00 AM", "06:30 AM", "07:00 AM", "07:30 AM", "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 AM", "12:30 AM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM", "09:30 PM", "10:00 PM", "10:30 PM", "11:00 PM", "11:30 PM", "00:00 AM", "00:30 AM", "01:00 AM", "01:30 AM", "02:00 AM", "02:30 AM", "03:00 AM", "03:30 AM", "04:00 AM", "04:30 AM", "05:00 AM", "05:30 AM" }));
+        timechooserTo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "6:00", "6:30", "7:00", "7:30", "8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "0:00", "0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30", "5:00", "5:30" }));
         timechooserTo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnFileChoose.setText("Choose File...");
@@ -356,46 +351,39 @@ public class Appointment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
-        // TODO add your handling code here
-        
-        String name=tfName.getText();
-        //Date datefrom1 = ((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();
-        //Date dateto1 = datechooserTo.getDate();
-        String datefrom=((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();;
-        String dateto=((JTextField) datechooserFrom.getDateEditor().getUiComponent()).getText();;
-        //java.sql.Date datefrom =java.sql.Date.valueOf(datechooserFrom.getValue());
-        //java.sql.Date dateto =java.sql.Date.valueOf(datechooserFrom.getValue());
-        String timefrom= (String)timechooserFrom.getSelectedItem();
-        String timeto= (String)timechooserTo.getSelectedItem();
-        String location=tfLocation.getText();
-        String participants=tfParticipants.getText();
-        
-        String priority= (String)priorityChooser.getSelectedItem();
-        String reminder= (String)reminderChooser.getSelectedItem();
-        
-        if(name.isEmpty())
-        {
-            JOptionPane.showMessageDialog(this,"Fill in the name field.","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else if(datefrom==null)
-        {
-            JOptionPane.showMessageDialog(this,"No Date selected.","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
-            addAppointment(name,datefrom,dateto,timefrom,timeto,location,participants,priority,reminder);
+        String name = tfName.getText();
+        LocalDate datefrom = LocalDate.parse(((JTextFieldDateEditor) datechooserFrom.getDateEditor().getUiComponent()).getText());
+        LocalDate dateto = LocalDate.parse(((JTextFieldDateEditor) datechooserTo.getDateEditor().getUiComponent()).getText());
+        LocalTime timefrom = stringToLocalTime((String) timechooserFrom.getSelectedItem());
+        LocalTime timeto = stringToLocalTime((String) timechooserTo.getSelectedItem());
+        String location = tfLocation.getText();
+        String participants = tfParticipants.getText();
+
+        String priority = (String) priorityChooser.getSelectedItem();
+        String reminder = (String) reminderChooser.getSelectedItem();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fill in the name field.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (datefrom == null) {
+            JOptionPane.showMessageDialog(this, "No Date selected.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            addAppointment(name, datefrom, dateto, timefrom, timeto, location, participants, priority, reminder);
         }
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
+    private LocalTime stringToLocalTime(String timeString) {
+        return LocalTime.parse(timeString, DateTimeFormatter.ofPattern("H:m"));
+    }
+
     private void btnFileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileChooseActionPerformed
         // TODO add your handling code here:
-        JFileChooser chooser=new JFileChooser();
+        JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
-        File f=chooser.getSelectedFile();
-        String filename=f.getAbsolutePath();
+        File f = chooser.getSelectedFile();
+        String filename = f.getAbsolutePath();
         jLabel_ShowPath.setText(filename);
-        
-        file_path=filename;
+
+        file_path = filename;
     }//GEN-LAST:event_btnFileChooseActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -480,117 +468,54 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> timechooserTo;
     // End of variables declaration//GEN-END:variables
 
-    
-    
-    // APPOINTMENT MIT DATE DATENTYP: java.sql.Date
-    /*private void addAppointment(String name, java.sql.Date datefrom, java.sql.Date dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
-        Connection dbconn=DBConnection.connectDB();
-        if(dbconn!=null)
-        {
-        try
-        {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder) VALUE(?,?,?,?,?,?,?,?,?,?)");
-            
-            st.setString(1,name);
-            st.setDate(2,(JTextField)datefrom.getDateEditor().getUiComponent().getText());
-            st.setDate(3,(JTextField)dateto.getDateEditor().getUiComponent().getText());
-            st.setString(4,timefrom);
-            st.setString(5,timeto);
-            st.setString(6,location);
-            st.setString(7,participants);
-            try
-            {
-                if(file_path!=null)
-                {
-                    InputStream file=new FileInputStream(new File(file_path));
-                    st.setBlob(8, file);
-                    
+    private void addAppointment(String name, LocalDate datefrom, LocalDate dateto, LocalTime timefrom, LocalTime timeto, String location, String participants, String priority, String reminder) {
+        Connection dbconn = DBConnection.connectDB();
+        if (dbconn != null) {
+            try {
+                PreparedStatement st = (PreparedStatement) dbconn.prepareStatement("INSERT INTO appointments (name,beginDate,endDate,beginTime,endTime,location,participants,file,priority,reminder,user_id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
+
+                st.setString(1, name);
+                st.setDate(2, localDateToSqlDate(datefrom));
+                st.setDate(3, localDateToSqlDate(dateto));
+                st.setTime(4, localTimeToSqlTime(timefrom));
+                st.setTime(5, localTimeToSqlTime(timeto));
+                st.setString(6, location);
+                st.setString(7, participants);
+                try {
+                    if (file_path != null) {
+                        InputStream file = new FileInputStream(new File(file_path));
+                        st.setBlob(8, file);
+
+                    } else {
+                        st.setNull(8, java.sql.Types.NULL);
+                    }
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                else
-                {
-                    st.setNull(6,java.sql.Types.NULL);
-                }
+
+                st.setString(9, priority);
+                st.setString(10, reminder);
+                st.setInt(11, Login.getId());
+
+                st.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Appointment added.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                dispose();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
-            catch(FileNotFoundException ex)
-            {
-                Logger.getLogger(Registration.class.getName()).log(Level.SEVERE,null,ex);
-            }
-            
-            st.setString(9,priority);
-            st.setString(10,reminder);
-            
-            int res=st.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this,"Appointment added.","Success",JOptionPane.INFORMATION_MESSAGE);
-            
-        }
-        catch(SQLException ex)
-        {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
-        }
-        }
-        else
-        {
-            System.out.println("The connection not available.");
-        }
-    }*/
-    
-    
-    // APPOINTMENT MIT DATEDATENTYP: String
-    
-    private void addAppointment(String name, String datefrom, String dateto, String timefrom, String timeto, String location, String participants, String priority, String reminder) {
-        Connection dbconn=DBConnection.connectDB();
-        if(dbconn!=null)
-        {
-        try
-        {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO appointments (name,datefrom,dateto,timefrom,timeto,location,participants,file,priority,reminder,id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
-            
-            st.setString(1,name);
-            st.setString(2,datefrom);
-            st.setString(3,dateto);
-            st.setString(4,timefrom);
-            st.setString(5,timeto);
-            st.setString(6,location);
-            st.setString(7,participants);
-            try
-            {
-                if(file_path!=null)
-                {
-                    InputStream file=new FileInputStream(new File(file_path));
-                    st.setBlob(8, file);
-                    
-                }
-                else
-                {
-                    st.setNull(8,java.sql.Types.NULL);
-                }
-            }
-            catch(FileNotFoundException ex)
-            {
-                Logger.getLogger(Registration.class.getName()).log(Level.SEVERE,null,ex);
-            }
-            
-            st.setString(9,priority);
-            st.setString(10,reminder);
-            st.setInt(11, Login.getId());
-            
-            int res=st.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this,"Appointment added.","Success",JOptionPane.INFORMATION_MESSAGE);
-            
-            dispose();
-            
-        }
-        catch(SQLException ex)
-        {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
-        }
-        }
-        else
-        {
+        } else {
             System.out.println("The connection not available.");
         }
     }
-}
 
+    Time localTimeToSqlTime(LocalTime timefrom) {
+        return java.sql.Time.valueOf(timefrom);
+    }
+
+    java.sql.Date localDateToSqlDate(LocalDate localDate) {
+        return java.sql.Date.valueOf(localDate);
+    }
+}
