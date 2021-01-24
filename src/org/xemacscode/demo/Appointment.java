@@ -17,17 +17,22 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.xemacscode.demo.email.MailService;
 
 /**
  *
  * @author camil
  */
 public class Appointment extends javax.swing.JFrame {
+
+    private MailService mailService;
 
     /**
      * Creates new form Appointment
@@ -37,6 +42,7 @@ public class Appointment extends javax.swing.JFrame {
     public Appointment() {
         initComponents();
         this.setLocationRelativeTo(null); // Appointment screen is shown in the center
+        mailService = new MailService();
     }
 
     /**
@@ -499,6 +505,16 @@ public class Appointment extends javax.swing.JFrame {
 
                 st.executeUpdate();
 
+                List<String> recipients;
+                if (participants.isBlank()) {
+                    recipients = List.of(Login.getEmail());
+                } else {
+                    recipients = Arrays.asList((participants + "," + Login.getEmail()).split(","));
+                }
+
+                String message = getMessage(datefrom, dateto, timefrom, timeto, location, participants, priority);
+                mailService.sendEmail(recipients, "Appointment: " + name, message);
+
                 JOptionPane.showMessageDialog(this, "Appointment added.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 dispose();
@@ -517,5 +533,32 @@ public class Appointment extends javax.swing.JFrame {
 
     java.sql.Date localDateToSqlDate(LocalDate localDate) {
         return java.sql.Date.valueOf(localDate);
+    }
+
+    /**
+     * @param beginDate of the appointment
+     * @param endDate of the appointment
+     * @param beginTime of the appointment
+     * @param endTime of the appointment
+     * @param location of the appointment
+     * @param participants of the appointment
+     * @param priority of the appointment
+     * @return a String with the message for the email based on the appointment information
+     */
+    private String getMessage(LocalDate beginDate, LocalDate endDate, LocalTime beginTime, LocalTime endTime, String location, String participants, String priority) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Appointment\n\n");
+        sb.append(String.format("Start: %s %s\n", beginDate.format(DateTimeFormatter.ISO_DATE), beginTime.format(DateTimeFormatter.ISO_TIME)));
+        sb.append(String.format("End: %s %s\n", endDate.format(DateTimeFormatter.ISO_DATE), endTime.format(DateTimeFormatter.ISO_TIME)));
+        if (!location.isBlank()) {
+            sb.append(String.format("Location: %s \n", location));
+        }
+        if (!participants.isBlank()) {
+            sb.append(String.format("Participants: %s \n", participants));
+        }
+        sb.append(String.format("Priority: %s \n\n", priority));
+        sb.append(String.format("Enjoy your meeting!\n", priority));
+        sb.append(String.format("Planned with: JavaTimeScheduler\n", priority));
+        return sb.toString();
     }
 }

@@ -24,6 +24,7 @@ import org.xemacscode.demo.security.EncryptionService;
 public class Login extends javax.swing.JFrame {
     
     static int id;
+    static String email;
 
     /**
      * Creates new form Login
@@ -280,6 +281,11 @@ public class Login extends javax.swing.JFrame {
     {
         return id; //transfer id to another class
     }
+    
+    public static String getEmail()
+    {
+        return email; //transfer id to another class
+    }
     /**
      * @param args the command line arguments
      */
@@ -352,11 +358,12 @@ public class Login extends javax.swing.JFrame {
                 c.setVisible(true);
                 
                 Statement stmt=(Statement) dbconn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE username ='"+tfUsername.getText()+"'");
+                ResultSet rs = stmt.executeQuery("SELECT id,email FROM users WHERE username ='"+tfUsername.getText()+"'");
                 
                 while(rs.next())
                 {
                     id= rs.getInt("id");
+                    email= rs.getString("email");
                 }
             }
             else
