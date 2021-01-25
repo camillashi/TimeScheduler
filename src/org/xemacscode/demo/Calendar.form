@@ -91,17 +91,17 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jCalendar1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="Calendardisplay" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jCalendar1" alignment="0" pref="355" max="32767" attributes="0"/>
+                  <Component id="Calendardisplay" alignment="0" pref="355" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="com.toedter.calendar.JCalendar" name="jCalendar1">
+            <Component class="com.toedter.calendar.JCalendar" name="Calendardisplay">
             </Component>
           </SubComponents>
         </Container>

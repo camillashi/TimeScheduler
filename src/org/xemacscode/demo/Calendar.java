@@ -5,6 +5,11 @@
  */
 package org.xemacscode.demo;
 
+import com.mysql.cj.jdbc.Blob;
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDayChooser;
+import java.awt.Component;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,6 +17,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +48,7 @@ public class Calendar extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jCalendar1 = new com.toedter.calendar.JCalendar();
+        Calendardisplay = new com.toedter.calendar.JCalendar();
         jLabel1 = new javax.swing.JLabel();
         btnAddAppoint = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -58,11 +64,11 @@ public class Calendar extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Calendardisplay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+            .addComponent(Calendardisplay, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -199,6 +205,40 @@ public class Calendar extends javax.swing.JFrame {
 
     }//GEN-LAST:event_exportScheduleActionPerformed
 
+    public static void updateCalendar() throws SQLException
+    {
+        JCalendar calendar = new JCalendar();
+        
+        Connection dbconn=DBConnection.connectDB();
+        Statement stmt=(Statement) dbconn.createStatement();
+        ResultSet rs = stmt.executeQuery("Select * from users WHERE id='"+UserProvider.getId()+"'");  
+        
+        
+        while(rs.next())
+        {
+            String name=rs.getString("name");
+            Date begindate=rs.getDate("beginDate");
+            Date enddate=rs.getDate("endDate");
+            //Time begintime=rs.getTime("beginTime");
+            //Time endtime=rs.getTime("endTime");
+            String location=rs.getString("location");
+            Blob file=(Blob) rs.getBlob("file");
+            String reminder=rs.getString("reminder");
+            String participants=rs.getString("participants");
+            int userid=rs.getInt("user_id");
+            
+            ResultSetMetaData metadata = (ResultSetMetaData) rs.getMetaData();
+            int columnCount = metadata.getColumnCount();
+            Date str[] = new Date[columnCount];
+            int a=0;
+            
+            str[a++]=rs.getDate("beginDate");
+            
+            //Calendar cal = Calendar.getInstance();
+            
+        }
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -235,9 +275,9 @@ public class Calendar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JCalendar Calendardisplay;
     private javax.swing.JButton btnAddAppoint;
     private javax.swing.JButton exportSchedule;
-    private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
