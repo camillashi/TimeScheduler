@@ -5,19 +5,23 @@
  */
 package org.xemacscode.demo;
 
+import org.xemacscode.demo.database.DBConnection;
 import com.toedter.calendar.JTextFieldDateEditor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,8 +42,29 @@ public class Appointment extends javax.swing.JFrame {
      * Creates new form Appointment
      */
     String file_path = null;
+    Integer id = null;
 
     public Appointment() {
+        this.initAppointment();
+    }
+
+    public Appointment(int id, String name, LocalDate beginDate, LocalDate endDate, LocalTime beginTime, LocalTime endTime, String location, String priority, String reminder, String participants) {
+        this.initAppointment();
+        this.id = id;
+        tfName.setText(name);
+        datechooserFrom.setDate(Date.from(beginDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        datechooserTo.setDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        timechooserFrom.setSelectedItem(beginTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        timechooserTo.setSelectedItem(endTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        tfLocation.setText(location);
+        priorityChooser.setSelectedItem(priority);
+        reminderChooser.setSelectedItem(reminder);
+        tfParticipants.setText(participants);
+        btnAddAppoint.setText("+edit appointment");
+        jAppointmentLabel.setText("Edit Appointment");
+    }
+    
+    private void initAppointment() {
         initComponents();
         this.setLocationRelativeTo(null); // Appointment screen is shown in the center
         mailService = new MailService();
@@ -82,7 +107,7 @@ public class Appointment extends javax.swing.JFrame {
         btnAddAppoint = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         jLabel_ShowPath = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jAppointmentLabel = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 
@@ -292,9 +317,9 @@ public class Appointment extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Add Appointment");
+        jAppointmentLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jAppointmentLabel.setForeground(new java.awt.Color(255, 255, 255));
+        jAppointmentLabel.setText("Add Appointment");
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel14.setText("-");
@@ -320,7 +345,7 @@ public class Appointment extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jLabel1)
+                .addComponent(jAppointmentLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel14)
                 .addGap(18, 18, 18)
@@ -335,7 +360,7 @@ public class Appointment extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(jAppointmentLabel)
                     .addComponent(jLabel14)
                     .addComponent(jLabel15))
                 .addGap(18, 18, 18)
@@ -388,13 +413,14 @@ public class Appointment extends javax.swing.JFrame {
         File f = chooser.getSelectedFile();
         String filename = f.getAbsolutePath();
         jLabel_ShowPath.setText(filename);
-
         file_path = filename;
     }//GEN-LAST:event_btnFileChooseActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
-        dispose(); //cleanup window
+        Calendar c=new Calendar();
+        c.setLocationRelativeTo(null);
+        c.setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
@@ -446,7 +472,7 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JButton btnFileChoose;
     private com.toedter.calendar.JDateChooser datechooserFrom;
     private com.toedter.calendar.JDateChooser datechooserTo;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jAppointmentLabel;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -478,7 +504,13 @@ public class Appointment extends javax.swing.JFrame {
         Connection dbconn = DBConnection.connectDB();
         if (dbconn != null) {
             try {
-                PreparedStatement st = (PreparedStatement) dbconn.prepareStatement("INSERT INTO appointments (name,beginDate,endDate,beginTime,endTime,location,participants,file,priority,reminder,user_id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
+                boolean isUpdate = this.id != null;
+                PreparedStatement st;
+                if(isUpdate) {
+                    st = (PreparedStatement) dbconn.prepareStatement("UPDATE appointments SET name = ? ,beginDate = ? ,endDate = ? ,beginTime = ? ,endTime = ? ,location = ? ,participants = ? ,file = ? ,priority = ? ,reminder = ? ,user_id = ? WHERE id = ?");
+                } else {
+                    st = (PreparedStatement) dbconn.prepareStatement("INSERT INTO appointments (name,beginDate,endDate,beginTime,endTime,location,participants,file,priority,reminder,user_id) VALUE(?,?,?,?,?,?,?,?,?,?,?)");
+                }
 
                 st.setString(1, name);
                 st.setDate(2, localDateToSqlDate(datefrom));
@@ -487,6 +519,7 @@ public class Appointment extends javax.swing.JFrame {
                 st.setTime(5, localTimeToSqlTime(timeto));
                 st.setString(6, location);
                 st.setString(7, participants);
+                
                 try {
                     if (file_path != null) {
                         InputStream file = new FileInputStream(new File(file_path));
@@ -503,6 +536,9 @@ public class Appointment extends javax.swing.JFrame {
                 st.setString(10, reminder);
                 st.setInt(11, UserProvider.getId());
 
+                if(isUpdate) {
+                    st.setInt(12, this.id);
+                }
                 st.executeUpdate();
 
                 List<String> recipients;
@@ -515,8 +551,15 @@ public class Appointment extends javax.swing.JFrame {
                 String message = getMessage(datefrom, dateto, timefrom, timeto, location, participants, priority);
                 mailService.sendEmail(recipients, "Appointment: " + name, message);
 
-                JOptionPane.showMessageDialog(this, "Appointment added.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                String updateMessage = "Appointment added.";
+                if(isUpdate) {
+                    updateMessage = "Appointment edited.";
+                }
+                JOptionPane.showMessageDialog(this, updateMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
 
+                Calendar c=new Calendar();
+                c.setLocationRelativeTo(null);
+                c.setVisible(true);
                 dispose();
 
             } catch (SQLException ex) {

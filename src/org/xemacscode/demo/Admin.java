@@ -5,6 +5,7 @@
  */
 package org.xemacscode.demo;
 
+import org.xemacscode.demo.database.DBConnection;
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

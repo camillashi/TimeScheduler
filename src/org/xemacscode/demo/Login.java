@@ -5,6 +5,7 @@
  */
 package org.xemacscode.demo;
 
+import org.xemacscode.demo.database.DBConnection;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
 import java.sql.Connection;
@@ -352,22 +353,16 @@ public class Login extends javax.swing.JFrame {
         
                     st.setString(1,username);
                     st.setString(2,EncryptionService.hashPassword(password));
-                    ResultSet res=st.executeQuery();
-                    if(res.next())
+                    ResultSet user=st.executeQuery();
+                    if(user.next())
                     {
-                        dispose();
+                        UserProvider.setId(user.getInt("id"));
+                        UserProvider.setEmail(user.getString("email"));
+
                         Calendar c=new Calendar();
                         c.setLocationRelativeTo(null);
                         c.setVisible(true);
-                
-                        Statement stmt=(Statement) dbconn.createStatement();
-                        ResultSet rs = stmt.executeQuery("SELECT id,email FROM users WHERE username ='"+tfUsername.getText()+"'");
-                
-                        while(rs.next())
-                        {
-                            UserProvider.setId(rs.getInt("id"));
-                            UserProvider.setEmail(rs.getString("email"));
-                        }
+                        dispose();
                     }
                     else
                     {
