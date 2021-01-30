@@ -1,35 +1,33 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo;
 
-import org.xemacscode.demo.database.DBConnection;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Statement;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.util.Timer;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import org.xemacscode.demo.database.DBConnection;
 import org.xemacscode.demo.security.EncryptionService;
 import org.xemacscode.demo.task.Reminder;
 
 /**
+ * Login frame
  *
  * @author camil
  */
 public class Login extends javax.swing.JFrame {
 
+    EncryptionService encryptionService;
+
     /**
      * Creates new form Login
      */
     public Login() {
+        encryptionService = new EncryptionService();
         initComponents();
         setLocationRelativeTo(null); //center the window
     }
@@ -51,12 +49,12 @@ public class Login extends javax.swing.JFrame {
         tfPassword = new javax.swing.JPasswordField();
         jPanel4 = new javax.swing.JPanel();
         btnLogin = new javax.swing.JButton();
-        jButton_Reg_Cancel = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
+        btnRegistration = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        btnMinimize = new javax.swing.JLabel();
+        btnClose = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -86,19 +84,19 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jButton_Reg_Cancel.setText("cancel");
-        jButton_Reg_Cancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton_Reg_Cancel.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnCancel.setText("cancel");
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton_Reg_CancelMouseClicked(evt);
+                btnCancelMouseClicked(evt);
             }
         });
 
-        jLabel6.setText("Don´t have an account? click here to registrate");
-        jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnRegistration.setText("Don´t have an account? click here to registrate");
+        btnRegistration.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegistration.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel6MouseClicked(evt);
+                btnRegistrationMouseClicked(evt);
             }
         });
 
@@ -108,13 +106,13 @@ public class Login extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(58, 58, 58)
-                .addComponent(jButton_Reg_Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(140, 140, 140)
-                .addComponent(jLabel6)
+                .addComponent(btnRegistration)
                 .addContainerGap(142, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -123,9 +121,9 @@ public class Login extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_Reg_Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel6)
+                .addComponent(btnRegistration)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -166,21 +164,21 @@ public class Login extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Login");
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel4.setText("-");
-        jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnMinimize.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnMinimize.setText("-");
+        btnMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel4MouseClicked(evt);
+                btnMinimizeMouseClicked(evt);
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel5.setText("X");
-        jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnClose.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnClose.setText("X");
+        btnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel5MouseClicked(evt);
+                btnCloseMouseClicked(evt);
             }
         });
 
@@ -192,9 +190,9 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(120, 120, 120)
-                .addComponent(jLabel4)
+                .addComponent(btnMinimize)
                 .addGap(41, 41, 41)
-                .addComponent(jLabel5)
+                .addComponent(btnClose)
                 .addGap(20, 20, 20))
         );
         jPanel3Layout.setVerticalGroup(
@@ -203,8 +201,8 @@ public class Login extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
+                    .addComponent(btnMinimize)
+                    .addComponent(btnClose))
                 .addGap(25, 25, 25))
         );
 
@@ -238,43 +236,40 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
-        String username=tfUsername.getText();
-        String password=String.valueOf(tfPassword.getPassword()); //safe the text the user wrote
-        
-        if(username.isEmpty()||password.isEmpty())
-        {
-            JOptionPane.showMessageDialog(this,"Username/Password should not be empty","Error",JOptionPane.ERROR_MESSAGE); //check if fields empty
-        }
-        else
-        {
+        // Gets input from form
+        String username = tfUsername.getText();
+        String password = String.valueOf(tfPassword.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) { //check if fields empty
+            JOptionPane.showMessageDialog(this, "Username/Password should not be empty", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
             try {
-                userLogin(username,password); //new method, look at bottom
+                userLogin(username, password);
             } catch (NoSuchAlgorithmException ex) {
-                JOptionPane.showMessageDialog(this,"Something went wrong, please try again!","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Something went wrong, please try again!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
-        System.exit(0); //close the Login window
-    }//GEN-LAST:event_jLabel5MouseClicked
+    private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
+        System.exit(0); // Close Application
+    }//GEN-LAST:event_btnCloseMouseClicked
 
-    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+    private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimizeMouseClicked
         this.setState(JFrame.ICONIFIED);  // minimize the Login screen
-    }//GEN-LAST:event_jLabel4MouseClicked
+    }//GEN-LAST:event_btnMinimizeMouseClicked
 
-    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
+    private void btnRegistrationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegistrationMouseClicked
         dispose(); //cleanup window
-        Registration r=new Registration(); //open Registration
+        Registration r = new Registration(); //open Registration
         r.setLocationRelativeTo(null);
         r.setVisible(true);
-    }//GEN-LAST:event_jLabel6MouseClicked
+    }//GEN-LAST:event_btnRegistrationMouseClicked
 
-    private void jButton_Reg_CancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Reg_CancelMouseClicked
-        System.exit(0);  // Close window
-    }//GEN-LAST:event_jButton_Reg_CancelMouseClicked
-    
+    private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseClicked
+        System.exit(0); // Close Application
+    }//GEN-LAST:event_btnCancelMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -302,12 +297,12 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        
-        
-        Timer t = new Timer();
-        Reminder mTask = new Reminder();
+        // Creates the remindertasks
+        Reminder reminderTask = new Reminder();
 
-        t.scheduleAtFixedRate(mTask, 0, 60000);
+        // Creates a timer and executes the reminder task in the background every minute (60000ms)
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(reminderTask, 0, 60000);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -317,14 +312,14 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JLabel btnClose;
     private javax.swing.JButton btnLogin;
-    private javax.swing.JButton jButton_Reg_Cancel;
+    private javax.swing.JLabel btnMinimize;
+    private javax.swing.JLabel btnRegistration;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -333,50 +328,49 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
-    private void userLogin(String username, String password) throws NoSuchAlgorithmException 
-    {
-        if("admin".equals(username)&&"admin".equals(password))
-        {
+    /**
+     * Logs the user in by checking credentials against database
+     *
+     * @param username
+     * @param password
+     * @throws NoSuchAlgorithmException
+     */
+    private void userLogin(String username, String password) throws NoSuchAlgorithmException {
+        if ("admin".equals(username) && "admin".equals(password)) {
             dispose();
-            Admin a=new Admin();
+            Admin a = new Admin();
             a.setLocationRelativeTo(null);
             a.setVisible(true);
-        }
-        else
-        {
-            Connection dbconn=DBConnection.connectDB();
-            if(dbconn!=null)
-            {
-                try
-                {
-                    PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("Select * from users WHERE username = ? AND password = ?");//To change body of generated methods, choose Tools | Templates.
-        
-                    st.setString(1,username);
-                    st.setString(2,EncryptionService.hashPassword(password));
-                    ResultSet user=st.executeQuery();
-                    if(user.next())
-                    {
+        } else {
+            Connection dbconn = DBConnection.connectDB();
+            if (dbconn != null) {
+                try {
+                    PreparedStatement st = (PreparedStatement) dbconn.prepareStatement("Select * from users WHERE username = ? AND password = ?");//To change body of generated methods, choose Tools | Templates.
+
+                    String hashPassword = encryptionService.hashPassword(password);
+
+                    st.setString(1, username);
+                    st.setString(2, hashPassword);
+
+                    ResultSet user = st.executeQuery();
+                    if (user.next()) {
+                        // Update user data in the user provider
                         UserProvider.setId(user.getInt("id"));
                         UserProvider.setEmail(user.getString("email"));
 
-                        Calendar c=new Calendar();
-                        c.setLocationRelativeTo(null);
-                        c.setVisible(true);
+                        // Open the calendar view
+                        Calendar calendar = new Calendar();
+                        calendar.setLocationRelativeTo(null);
+                        calendar.setVisible(true);
                         dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Username/Password not found.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    else
-                    {
-                        JOptionPane.showMessageDialog(this,"Username/Password not found.","Error",JOptionPane.ERROR_MESSAGE);
-                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, "Could not retrieve user data from database", ex);
                 }
-                catch(SQLException ex)
-                {
-                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
-                }
-                }
-                else
-                {
-                    System.out.println("The connection not available.");
+            } else {
+                System.out.println("The connection not available.");
             }
         }
     }

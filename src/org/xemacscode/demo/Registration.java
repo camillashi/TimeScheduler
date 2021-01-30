@@ -1,32 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo;
 
-import org.xemacscode.demo.database.DBConnection;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.xemacscode.demo.database.DBConnection;
 import org.xemacscode.demo.security.EncryptionService;
 
 /**
+ * Registration frame
  *
  * @author camil
  */
 public class Registration extends javax.swing.JFrame {
-    
+
+    private final EncryptionService encryptionService;
+
     /**
      * Creates new form Registration
      */
     public Registration() {
+        encryptionService = new EncryptionService();
         initComponents();
         this.setLocationRelativeTo(null); // Registration screen is shown in the center
     }
@@ -103,11 +102,6 @@ public class Registration extends javax.swing.JFrame {
         tfUname.setBackground(new java.awt.Color(153, 153, 153));
 
         tfLname.setBackground(new java.awt.Color(153, 153, 153));
-        tfLname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfLnameActionPerformed(evt);
-            }
-        });
 
         tfFname.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -292,56 +286,39 @@ public class Registration extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tfLnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfLnameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfLnameActionPerformed
-
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
         // TODO add your handling code here:
-        String fname=tfFname.getText();
-        String lname=tfLname.getText();
-        String uname=tfUname.getText();
-        String mail=tfMail.getText();
-        String mailconfirm=tfMailConfirm.getText();
-        String password=String.valueOf(tfPassword.getPassword());
-        String passwordconfirm=String.valueOf(tfPasswordConfirm.getPassword());
-        
-        if(fname.isEmpty()||lname.isEmpty()||uname.isEmpty()||mail.isEmpty()||mailconfirm.isEmpty()||password.isEmpty()||passwordconfirm.isEmpty())
-        {
-            JOptionPane.showMessageDialog(this,"One or more fields are empty.","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else if(!mail.equals(mailconfirm))
-        {
-            JOptionPane.showMessageDialog(this,"Check E-Mail Confirmation.","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else if(!password.equals(passwordconfirm))
-        {
-            JOptionPane.showMessageDialog(this,"Check Password Confirmation.","Error",JOptionPane.ERROR_MESSAGE);
-        }
-        else try {
-            if(checkUsername(uname))
-            {
-                JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
-            }
-            else if(checkEmail(mail))
-            {
-                JOptionPane.showMessageDialog(null,"Email already exist.","Error",JOptionPane.ERROR_MESSAGE);
-            }
-            else
-            {
-                userRegister(fname,lname,uname,mail,password);
+        String fname = tfFname.getText();
+        String lname = tfLname.getText();
+        String uname = tfUname.getText();
+        String mail = tfMail.getText();
+        String mailconfirm = tfMailConfirm.getText();
+        String password = String.valueOf(tfPassword.getPassword());
+        String passwordconfirm = String.valueOf(tfPasswordConfirm.getPassword());
+
+        if (fname.isEmpty() || lname.isEmpty() || uname.isEmpty() || mail.isEmpty() || mailconfirm.isEmpty() || password.isEmpty() || passwordconfirm.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "One or more fields are empty.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (!mail.equals(mailconfirm)) {
+            JOptionPane.showMessageDialog(this, "Check E-Mail Confirmation.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (!password.equals(passwordconfirm)) {
+            JOptionPane.showMessageDialog(this, "Check Password Confirmation.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else try {
+            if (checkUsername(uname)) {
+                JOptionPane.showMessageDialog(null, "Username already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (checkEmail(mail)) {
+                JOptionPane.showMessageDialog(null, "Email already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                userRegister(fname, lname, uname, mail, password);
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
-                JOptionPane.showMessageDialog(this,"Something went wrong, please try again!","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Something went wrong, please try again!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
-        System.exit(0);
+        System.exit(0); // close the program
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimizeMouseClicked
@@ -349,51 +326,57 @@ public class Registration extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMinimizeMouseClicked
 
     private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
-        System.exit(0); //close the Login window
+        System.exit(0); //close the program
     }//GEN-LAST:event_btnCloseMouseClicked
 
     private void btnBackToLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackToLoginMouseClicked
         dispose();
-        Login l=new Login();
+        Login l = new Login();
         l.setLocationRelativeTo(null);
         l.setVisible(true);
     }//GEN-LAST:event_btnBackToLoginMouseClicked
 
-    public boolean checkUsername(String uname) throws SQLException
-    {
-        PreparedStatement st;
-        ResultSet rs;
-        boolean username_exist=false;
-        String query="SELECT * FROM users WHERE username = ?";
-        
-        st=DBConnection.connectDB().prepareStatement(query);
-        st.setString(1,uname);
-        rs=st.executeQuery();
-        if(rs.next())
-        {
-            username_exist=true;
-            //JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
+    /**
+     * Checks wether the user name already exists in the current users
+     *
+     * @param username
+     * @return boolean
+     * @throws SQLException 
+     */
+    private boolean checkUsername(String username) throws SQLException {
+        boolean usernameExist = false;
+        String query = "SELECT * FROM users WHERE username = ?";
+
+        PreparedStatement st = DBConnection.connectDB().prepareStatement(query);
+        st.setString(1, username);
+
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            usernameExist = true;
         }
-        return username_exist;
+        return usernameExist;
     }
-    
-    public boolean checkEmail(String mail) throws SQLException
-    {
-        PreparedStatement st;
-        ResultSet rs;
-        boolean email_exist=false;
-        String query="SELECT * FROM users WHERE email = ?";
-        
-        st=DBConnection.connectDB().prepareStatement(query);
-        st.setString(1,mail);
-        rs=st.executeQuery();
-        if(rs.next())
-        {
-            email_exist=true;
-            //JOptionPane.showMessageDialog(null,"Username already exist.","Error",JOptionPane.ERROR_MESSAGE);
+
+    /**
+     * Checks wether the email already exists in the current users
+     *
+     * @param email
+     * @return boolean
+     * @throws SQLException 
+     */
+    private boolean checkEmail(String email) throws SQLException {
+        boolean email_exist = false;
+        String query = "SELECT * FROM users WHERE email = ?";
+
+        PreparedStatement st = DBConnection.connectDB().prepareStatement(query);
+        st.setString(1, email);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            email_exist = true;
         }
         return email_exist;
     }
+
     /**
      * @param args the command line arguments
      */
@@ -455,37 +438,43 @@ public class Registration extends javax.swing.JFrame {
     private javax.swing.JTextField tfUname;
     // End of variables declaration//GEN-END:variables
 
-    private void userRegister(String fname, String lname, String uname, String mail, String password) throws NoSuchAlgorithmException {
-        Connection dbconn=DBConnection.connectDB();
-        if(dbconn!=null)
-        {
-        try
-        {
-            PreparedStatement st=(PreparedStatement)dbconn.prepareStatement("INSERT INTO users (firstname,lastname,username,email,password) VALUE(?,?,?,?,?)");
-            
-            st.setString(1,fname);
-            st.setString(2,lname);
-            st.setString(3,uname);
-            st.setString(4,mail);
-            st.setString(5,EncryptionService.hashPassword(password));
-            
-            st.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this,"New Account created.","Success",JOptionPane.INFORMATION_MESSAGE);
-            
-            dispose();
-            Login loginwindow=new Login();
-            loginwindow.setLocationRelativeTo(null);
-            loginwindow.setVisible(true);
-            
-        }
-        catch(SQLException ex)
-        {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE,null,ex);
-        }
-        }
-        else
-        {
+    
+    /**
+     * Creates a new user in the database.
+     * Afterwards notify the user and open the login window.
+     *
+     * @param firstname
+     * @param lastname
+     * @param username
+     * @param email
+     * @param password
+     * @throws NoSuchAlgorithmException 
+     */
+    private void userRegister(String firstname, String lastname, String username, String email, String password) throws NoSuchAlgorithmException {
+        Connection dbconn = DBConnection.connectDB();
+        if (dbconn != null) {
+            try {
+                PreparedStatement st = (PreparedStatement) dbconn.prepareStatement("INSERT INTO users (firstname,lastname,username,email,password) VALUE(?,?,?,?,?)");
+
+                st.setString(1, firstname);
+                st.setString(2, lastname);
+                st.setString(3, username);
+                st.setString(4, email);
+                st.setString(5, encryptionService.hashPassword(password));
+
+                st.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "New Account created.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                dispose();
+                Login loginwindow = new Login();
+                loginwindow.setLocationRelativeTo(null);
+                loginwindow.setVisible(true);
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
             System.out.println("The connection not available.");
         }
     }

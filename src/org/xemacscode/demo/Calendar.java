@@ -1,40 +1,33 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo;
 
-import org.xemacscode.demo.database.DBConnection;
-import com.mysql.cj.jdbc.Blob;
-import com.mysql.cj.jdbc.result.ResultSetMetaData;
-import com.toedter.calendar.JCalendar;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.xemacscode.demo.database.AppointmentDatabaseService;
 
 /**
+ * Calendar frame
  *
  * @author camil
  */
 public class Calendar extends javax.swing.JFrame {
-    
+
+    AppointmentPaneProvider appointmentPaneProvider;
+    AppointmentDatabaseService appointmentDatabaseService;
+
     /**
      * Creates new form Calendar
      */
     public Calendar() {
+        appointmentDatabaseService = new AppointmentDatabaseService();
+        appointmentPaneProvider = new AppointmentPaneProvider();
         initComponents();
-        AppointmentPaneProvider.initAppointments(this, appointmentsPane);
+        this.appointmentPaneProvider.initAppointments(this, appointmentsPane);
     }
 
     /**
@@ -148,55 +141,42 @@ public class Calendar extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Exports appointments with information from the user as a txt file
+     *
+     * @param evt
+     */
     private void exportScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportScheduleActionPerformed
 
-        try ( FileWriter writer = new FileWriter("appointments.txt")) {
-            java.util.Calendar calendar = java.util.Calendar.getInstance();
+        try ( FileWriter writer = new FileWriter("appointments.txt")) { // Try to write the appointments in a txt file
+            ResultSet appointments = appointmentDatabaseService.getWeeklyAppointments(UserProvider.getId());
 
-            calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-            LocalDate startOfWeek = LocalDate.ofInstant(calendar.getTime().toInstant(), ZoneId.systemDefault());
-            LocalDate endOfWeek = startOfWeek.plusDays(7);
-            Integer userId = UserProvider.getId();
-
-            Connection dbconn = DBConnection.connectDB();
-            final Date dateStartOfWeek = Date.valueOf(startOfWeek);
-            final Date dateEndOfWeek = Date.valueOf(endOfWeek);
-
-            PreparedStatement appointmentsBeginDateQuery = dbconn.prepareStatement("SELECT * FROM `appointments` WHERE ((`beginDate` > ? AND `beginDate` <= ?) OR (`endDate` > ? AND `endDate` <= ?)) AND `user_id` = ?");
-
-            appointmentsBeginDateQuery.setDate(1, dateStartOfWeek);
-            appointmentsBeginDateQuery.setDate(2, dateEndOfWeek);
-            appointmentsBeginDateQuery.setDate(3, dateStartOfWeek);
-            appointmentsBeginDateQuery.setDate(4, dateEndOfWeek);
-            appointmentsBeginDateQuery.setInt(5, userId);
-            ResultSet appointments = appointmentsBeginDateQuery.executeQuery();
-
-            while (appointments.next()) {
+            while (appointments.next()) { // iterate over all appointments in result set
+                // Writes one appointment to the appointment file
                 writer.write(String.format("Appointment: %s\n\n", appointments.getString("name")));
                 writer.write(String.format("Start: %s %s\n",
-                    appointments.getDate("beginDate").toLocalDate().format(DateTimeFormatter.ISO_DATE),
-                    appointments.getTime("beginTime").toLocalTime().format(DateTimeFormatter.ISO_TIME)));
-            writer.write(String.format("End: %s %s\n",
-                appointments.getDate("endDate").toLocalDate().format(DateTimeFormatter.ISO_DATE),
-                appointments.getTime("endTime").toLocalTime().format(DateTimeFormatter.ISO_TIME)));
-        String location = appointments.getString("location");
-        if (!location.isBlank()) {
-            writer.write(String.format("Location: %s \n", location));
-        }
-        String participants = appointments.getString("participants");
-        if (!participants.isBlank()) {
-            writer.write(String.format("Participants: %s \n", participants));
-        }
-        writer.write(String.format("Priority: %s \n\n", appointments.getString("priority")));
-        }
-        writer.flush();
+                        appointments.getDate("beginDate").toLocalDate().format(DateTimeFormatter.ISO_DATE),
+                        appointments.getTime("beginTime").toLocalTime().format(DateTimeFormatter.ISO_TIME)));
+                writer.write(String.format("End: %s %s\n",
+                        appointments.getDate("endDate").toLocalDate().format(DateTimeFormatter.ISO_DATE),
+                        appointments.getTime("endTime").toLocalTime().format(DateTimeFormatter.ISO_TIME)));
+                String location = appointments.getString("location");
+                if (!location.isBlank()) {
+                    writer.write(String.format("Location: %s \n", location));
+                }
+                String participants = appointments.getString("participants");
+                if (!participants.isBlank()) {
+                    writer.write(String.format("Participants: %s \n", participants));
+                }
+                writer.write(String.format("Priority: %s \n\n", appointments.getString("priority")));
+            }
+            writer.flush();
         } catch (SQLException | IOException ex) {
-            Logger.getLogger(Calendar.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Calendar.class.getName()).log(Level.SEVERE, "Could not export appointments", ex);
         }
     }//GEN-LAST:event_exportScheduleActionPerformed
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
-        // TODO add your handling code here:
         Appointment appointment = new Appointment(); //open Appointment
         appointment.setLocationRelativeTo(null);
         appointment.setVisible(true);
@@ -204,42 +184,11 @@ public class Calendar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        Login login = new Login();
+        Login login = new Login(); // open login
         login.setLocationRelativeTo(null);
         login.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnLogoutActionPerformed
-
-    public static void updateCalendar() throws SQLException {
-        JCalendar calendar = new JCalendar();
-
-        Connection dbconn = DBConnection.connectDB();
-        Statement stmt = (Statement) dbconn.createStatement();
-        ResultSet rs = stmt.executeQuery("Select * from users WHERE id='" + UserProvider.getId() + "'");
-
-        while (rs.next()) {
-            String name = rs.getString("name");
-            Date begindate = rs.getDate("beginDate");
-            Date enddate = rs.getDate("endDate");
-            //Time begintime=rs.getTime("beginTime");
-            //Time endtime=rs.getTime("endTime");
-            String location = rs.getString("location");
-            Blob file = (Blob) rs.getBlob("file");
-            String reminder = rs.getString("reminder");
-            String participants = rs.getString("participants");
-            int userid = rs.getInt("user_id");
-
-            ResultSetMetaData metadata = (ResultSetMetaData) rs.getMetaData();
-            int columnCount = metadata.getColumnCount();
-            Date str[] = new Date[columnCount];
-            int a = 0;
-
-            str[a++] = rs.getDate("beginDate");
-
-            //Calendar cal = Calendar.getInstance();
-        }
-
-    }
 
     /**
      * @param args the command line arguments

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo.security;
 
 import java.security.MessageDigest;
@@ -14,7 +9,14 @@ import java.security.NoSuchAlgorithmException;
  */
 public class EncryptionService {
 
-    public static String hashPassword(String password) throws NoSuchAlgorithmException {
+    /**
+     * hashes a password based on SHA-512
+     * 
+     * @param password as string
+     * @return string The encrypted password
+     * @throws NoSuchAlgorithmException 
+     */
+    public String hashPassword(String password) throws NoSuchAlgorithmException {
 
         MessageDigest messagedigest = MessageDigest.getInstance("SHA-512");
         messagedigest.update(password.getBytes());

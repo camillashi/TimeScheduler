@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo.email;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,21 +14,30 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
+ * Sends emails
  *
  * @author nikoa
  */
 public class MailService {
     
+    private static final String EMAIL_ADRESS = "javatimescheduler@gmail.com";
+    private static final String EMAIL_PASSWORD = "javajava";
+    
     Session session;
+    
 
     public MailService() {
+        // Configuration of email client
         Properties properties = getSmtpProperties();
+        Authenticator authenticator = getAuthenticator();
 
-        session = Session.getInstance(properties, getAuthenticator());
+        // Create a session for sending emails
+        session = Session.getInstance(properties, authenticator);
     }
 
     /**
-     *
+     * Send an email to a list of recipients with a subject and a message using a gmail account as sender
+     * 
      * @param recipients of the email
      * @param subject of the email
      * @param message of the email
@@ -44,7 +45,7 @@ public class MailService {
     public void sendEmail(List<String> recipients, String subject, String message) {
         try {
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("javatimescheduler@gmail.com"));
+            msg.setFrom(new InternetAddress(EMAIL_ADRESS));
             for (Iterator<String> iterator = recipients.iterator(); iterator.hasNext();) {
                 String recipient = iterator.next();
                 msg.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
@@ -60,21 +61,27 @@ public class MailService {
     }
 
     /**
+     * Get Authenticator for gmail email adress based on adress and password
+     *
      * @return Authenticator with password
      */
-    private static Authenticator getAuthenticator() {
+    private Authenticator getAuthenticator() {
         return new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("javatimescheduler@gmail.com", "javajava");
+                return new PasswordAuthentication(EMAIL_ADRESS, EMAIL_PASSWORD);
             }
         };
     }
 
     /**
+     * Get Configuration for gmail SMTP server.
+     * Sets host and port based on gmail documentation.
+     * Also enables SSL and authentification because this is required on gmail.
+     * 
      * @return Properties for Gmail SMTP Server
      */
-    private static Properties getSmtpProperties() {
+    private Properties getSmtpProperties() {
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "465");

@@ -1,17 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xemacscode.demo;
 
-import org.xemacscode.demo.database.DBConnection;
 import com.toedter.calendar.JTextFieldDateEditor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -28,9 +21,11 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.xemacscode.demo.database.DBConnection;
 import org.xemacscode.demo.email.MailService;
 
 /**
+ * Appointment frame
  *
  * @author camil
  */
@@ -41,16 +36,34 @@ public class Appointment extends javax.swing.JFrame {
     /**
      * Creates new form Appointment
      */
-    String file_path = null;
+    String filePath = null;
     Integer id = null;
 
     public Appointment() {
         this.initAppointment();
     }
 
+    /**
+     * Opens appointment frame with existing appointment
+     *
+     * @param id
+     * @param name
+     * @param beginDate
+     * @param endDate
+     * @param beginTime
+     * @param endTime
+     * @param location
+     * @param priority
+     * @param reminder
+     * @param participants 
+     */
     public Appointment(int id, String name, LocalDate beginDate, LocalDate endDate, LocalTime beginTime, LocalTime endTime, String location, String priority, String reminder, String participants) {
         this.initAppointment();
+
+        // Set appointment id for update
         this.id = id;
+        
+        // Set data based on existing appointment
         tfName.setText(name);
         datechooserFrom.setDate(Date.from(beginDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         datechooserTo.setDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -60,10 +73,15 @@ public class Appointment extends javax.swing.JFrame {
         priorityChooser.setSelectedItem(priority);
         reminderChooser.setSelectedItem(reminder);
         tfParticipants.setText(participants);
+        
+        // Change text of add button and title
         btnAddAppoint.setText("+edit appointment");
         jAppointmentLabel.setText("Edit Appointment");
     }
     
+    /**
+     * initializes appointment frame
+     */
     private void initAppointment() {
         initComponents();
         this.setLocationRelativeTo(null); // Appointment screen is shown in the center
@@ -108,8 +126,8 @@ public class Appointment extends javax.swing.JFrame {
         btnBack = new javax.swing.JButton();
         jLabel_ShowPath = new javax.swing.JLabel();
         jAppointmentLabel = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        btnMinimize = new javax.swing.JLabel();
+        btnClose = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -321,21 +339,21 @@ public class Appointment extends javax.swing.JFrame {
         jAppointmentLabel.setForeground(new java.awt.Color(255, 255, 255));
         jAppointmentLabel.setText("Add Appointment");
 
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel14.setText("-");
-        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel14.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnMinimize.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnMinimize.setText("-");
+        btnMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel14MouseClicked(evt);
+                btnMinimizeMouseClicked(evt);
             }
         });
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel15.setText("X");
-        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel15.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnClose.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnClose.setText("X");
+        btnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel15MouseClicked(evt);
+                btnCloseMouseClicked(evt);
             }
         });
 
@@ -347,9 +365,9 @@ public class Appointment extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jAppointmentLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel14)
+                .addComponent(btnMinimize)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel15)
+                .addComponent(btnClose)
                 .addGap(27, 27, 27))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -361,8 +379,8 @@ public class Appointment extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jAppointmentLabel)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel15))
+                    .addComponent(btnMinimize)
+                    .addComponent(btnClose))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -382,6 +400,7 @@ public class Appointment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddAppointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAppointActionPerformed
+        // Gets data from the form        
         String name = tfName.getText();
         LocalDate datefrom = LocalDate.parse(((JTextFieldDateEditor) datechooserFrom.getDateEditor().getUiComponent()).getText());
         LocalDate dateto = LocalDate.parse(((JTextFieldDateEditor) datechooserTo.getDateEditor().getUiComponent()).getText());
@@ -393,6 +412,7 @@ public class Appointment extends javax.swing.JFrame {
         String priority = (String) priorityChooser.getSelectedItem();
         String reminder = (String) reminderChooser.getSelectedItem();
 
+        // Show error if name or datefrom is empty
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Fill in the name field.", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (datefrom == null) {
@@ -402,34 +422,46 @@ public class Appointment extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAddAppointActionPerformed
 
+    /**
+     * Converts a time string to local time so it can be processed later
+     *
+     * @param timeString in the format (H:m, e.g. "6:00")
+     * @return LocalTime based on the timeString
+     */
     private LocalTime stringToLocalTime(String timeString) {
         return LocalTime.parse(timeString, DateTimeFormatter.ofPattern("H:m"));
     }
 
     private void btnFileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileChooseActionPerformed
-        // TODO add your handling code here:
+        // Open file chooser
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
-        File f = chooser.getSelectedFile();
-        String filename = f.getAbsolutePath();
+        File file = chooser.getSelectedFile();
+        
+        // Update label to show filename
+        String filename = file.getAbsolutePath();
         jLabel_ShowPath.setText(filename);
-        file_path = filename;
+        
+        // store filePath
+        filePath = filename;
     }//GEN-LAST:event_btnFileChooseActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // Create new calendar frame
         Calendar c=new Calendar();
         c.setLocationRelativeTo(null);
         c.setVisible(true);
+        // Close this frame
         dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
-        System.exit(0);  //close screen
-    }//GEN-LAST:event_jLabel15MouseClicked
+    private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
+        System.exit(0);  // close application
+    }//GEN-LAST:event_btnCloseMouseClicked
 
-    private void jLabel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseClicked
+    private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimizeMouseClicked
         this.setState(JFrame.ICONIFIED);  // minimize the screen
-    }//GEN-LAST:event_jLabel14MouseClicked
+    }//GEN-LAST:event_btnMinimizeMouseClicked
 
     /**
      * @param args the command line arguments
@@ -469,7 +501,9 @@ public class Appointment extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddAppoint;
     private javax.swing.JButton btnBack;
+    private javax.swing.JLabel btnClose;
     private javax.swing.JButton btnFileChoose;
+    private javax.swing.JLabel btnMinimize;
     private com.toedter.calendar.JDateChooser datechooserFrom;
     private com.toedter.calendar.JDateChooser datechooserTo;
     private javax.swing.JLabel jAppointmentLabel;
@@ -477,8 +511,6 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -500,12 +532,26 @@ public class Appointment extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> timechooserTo;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Adds an appointment to the database
+     *
+     * @param name
+     * @param datefrom
+     * @param dateto
+     * @param timefrom
+     * @param timeto
+     * @param location
+     * @param participants
+     * @param priority
+     * @param reminder 
+     */
     private void addAppointment(String name, LocalDate datefrom, LocalDate dateto, LocalTime timefrom, LocalTime timeto, String location, String participants, String priority, String reminder) {
         Connection dbconn = DBConnection.connectDB();
         if (dbconn != null) {
             try {
-                boolean isUpdate = this.id != null;
                 PreparedStatement st;
+                // If an id is set we need an update and not an add
+                boolean isUpdate = this.id != null;
                 if(isUpdate) {
                     st = (PreparedStatement) dbconn.prepareStatement("UPDATE appointments SET name = ? ,beginDate = ? ,endDate = ? ,beginTime = ? ,endTime = ? ,location = ? ,participants = ? ,file = ? ,priority = ? ,reminder = ? ,user_id = ? WHERE id = ?");
                 } else {
@@ -520,9 +566,10 @@ public class Appointment extends javax.swing.JFrame {
                 st.setString(6, location);
                 st.setString(7, participants);
                 
+                // If there is a file we set the file, if not we set null
                 try {
-                    if (file_path != null) {
-                        InputStream file = new FileInputStream(new File(file_path));
+                    if (filePath != null) {
+                        InputStream file = new FileInputStream(new File(filePath));
                         st.setBlob(8, file);
 
                     } else {
@@ -536,11 +583,13 @@ public class Appointment extends javax.swing.JFrame {
                 st.setString(10, reminder);
                 st.setInt(11, UserProvider.getId());
 
+                // On update we set the appointment id
                 if(isUpdate) {
                     st.setInt(12, this.id);
                 }
                 st.executeUpdate();
 
+                // Notify recipients via email about the appointment
                 List<String> recipients;
                 if (participants.isBlank()) {
                     recipients = List.of(UserProvider.getEmail());
@@ -548,32 +597,48 @@ public class Appointment extends javax.swing.JFrame {
                     recipients = Arrays.asList((participants + "," + UserProvider.getEmail()).split(","));
                 }
 
+                // Receiving email message based on appointment data
                 String message = getMessage(datefrom, dateto, timefrom, timeto, location, participants, priority);
                 mailService.sendEmail(recipients, "Appointment: " + name, message);
 
+                // Show success message
                 String updateMessage = "Appointment added.";
                 if(isUpdate) {
                     updateMessage = "Appointment edited.";
                 }
                 JOptionPane.showMessageDialog(this, updateMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
 
+                // Create new calendar frame
                 Calendar c=new Calendar();
                 c.setLocationRelativeTo(null);
                 c.setVisible(true);
+                // Close this frame
                 dispose();
 
             } catch (SQLException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, "Could not write appointment", ex);
             }
         } else {
             System.out.println("The connection not available.");
         }
     }
 
+    /**
+     * Convert LocalTime to Sql time
+     *
+     * @param timefrom
+     * @return 
+     */
     Time localTimeToSqlTime(LocalTime timefrom) {
         return java.sql.Time.valueOf(timefrom);
     }
 
+    /**
+     * Convert LocalDate to Sql date
+     *
+     * @param localDate
+     * @return 
+     */
     java.sql.Date localDateToSqlDate(LocalDate localDate) {
         return java.sql.Date.valueOf(localDate);
     }
