@@ -68,8 +68,8 @@ public class Appointment extends javax.swing.JFrame {
         tfName.setText(name);
         datechooserFrom.setDate(Date.from(beginDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         datechooserTo.setDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        timechooserFrom.setSelectedItem(beginTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-        timechooserTo.setSelectedItem(endTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        timechooserFrom.setSelectedItem(beginTime.format(DateTimeFormatter.ofPattern("H:mm")));
+        timechooserTo.setSelectedItem(endTime.format(DateTimeFormatter.ofPattern("H:mm")));
         tfLocation.setText(location);
         priorityChooser.setSelectedItem(priority);
         reminderChooser.setSelectedItem(reminder);
