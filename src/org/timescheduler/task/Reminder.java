@@ -1,4 +1,4 @@
-package org.xemacscode.demo.task;
+package org.timescheduler.task;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.xemacscode.demo.database.AppointmentDatabaseService;
-import org.xemacscode.demo.database.DBConnection;
-import org.xemacscode.demo.email.MailService;
+import org.timescheduler.database.AppointmentDatabaseService;
+import org.timescheduler.database.DBConnection;
+import org.timescheduler.email.MailService;
 
 /**
  * TimerTask to send reminder for due appointments This task is supposed to run

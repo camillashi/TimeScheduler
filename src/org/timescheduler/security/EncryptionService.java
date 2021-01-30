@@ -1,4 +1,4 @@
-package org.xemacscode.demo.security;
+package org.timescheduler.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

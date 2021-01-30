@@ -1,4 +1,4 @@
-package org.xemacscode.demo.email;
+package org.timescheduler.email;
 
 import java.util.Iterator;
 import java.util.List;

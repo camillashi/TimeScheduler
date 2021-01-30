@@ -1,4 +1,4 @@
-package org.xemacscode.demo;
+package org.timescheduler.view;
 
 import com.toedter.calendar.JTextFieldDateEditor;
 import java.io.File;
@@ -21,8 +21,9 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.xemacscode.demo.database.DBConnection;
-import org.xemacscode.demo.email.MailService;
+import org.timescheduler.UserProvider;
+import org.timescheduler.database.DBConnection;
+import org.timescheduler.email.MailService;
 
 /**
  * Appointment frame

@@ -1,4 +1,4 @@
-package org.xemacscode.demo;
+package org.timescheduler.view;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -10,9 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.xemacscode.demo.database.DBConnection;
-import org.xemacscode.demo.security.EncryptionService;
-import org.xemacscode.demo.task.Reminder;
+import org.timescheduler.UserProvider;
+import org.timescheduler.database.DBConnection;
+import org.timescheduler.security.EncryptionService;
+import org.timescheduler.task.Reminder;
 
 /**
  * Login frame

@@ -1,4 +1,4 @@
-package org.xemacscode.demo;
+package org.timescheduler.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,8 +17,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.xemacscode.demo.database.AppointmentDatabaseService;
-import org.xemacscode.demo.email.MailService;
+import org.timescheduler.UserProvider;
+import org.timescheduler.database.AppointmentDatabaseService;
+import org.timescheduler.email.MailService;
 
 /**
  * Provides the content of the appointment pane dynamically based on the

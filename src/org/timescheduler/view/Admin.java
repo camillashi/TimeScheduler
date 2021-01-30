@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.xemacscode.demo;
+package org.timescheduler.view;
 
-import org.xemacscode.demo.database.DBConnection;
+import org.timescheduler.database.DBConnection;
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

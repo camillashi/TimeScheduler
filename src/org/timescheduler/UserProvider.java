@@ -1,4 +1,4 @@
-package org.xemacscode.demo;
+package org.timescheduler;
 
 /**
  * Provides user Information across the application
