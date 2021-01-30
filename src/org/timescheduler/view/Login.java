@@ -298,12 +298,14 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        // Creates the remindertasks
+        // Creates the remindertasks (needs to be happen here because this is the first frame to open)
         Reminder reminderTask = new Reminder();
 
-        // Creates a timer and executes the reminder task in the background every minute (60000ms)
+        // Creates a timer
         Timer timer = new Timer();
+        // Use the timer to execute the reminder run function in the background every minute (60000ms) without delay
         timer.scheduleAtFixedRate(reminderTask, 0, 60000);
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
