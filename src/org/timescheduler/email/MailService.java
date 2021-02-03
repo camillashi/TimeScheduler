@@ -25,7 +25,9 @@ public class MailService {
     
     Session session;
     
-
+    /**
+     *
+     */
     public MailService() {
         // Configuration of email client
         Properties properties = getSmtpProperties();

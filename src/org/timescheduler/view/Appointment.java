@@ -27,8 +27,10 @@ import org.timescheduler.email.MailService;
 
 /**
  * Appointment frame
- *
+ * In this Form the user enters the Information about the appointment.
+ * In this class, new appointments are read in, transferred to the database and saved.
  * @author camil
+ * @version 1.0
  */
 public class Appointment extends javax.swing.JFrame {
 

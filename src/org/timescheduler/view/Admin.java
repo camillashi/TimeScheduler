@@ -19,8 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+*In this form the admin can see the information of all users and can edit or delete information from there.
  * @author Julia
+ * @version 1.0
  */
 public class Admin extends javax.swing.JFrame {
     

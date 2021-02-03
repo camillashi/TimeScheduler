@@ -13,6 +13,11 @@ public class DBConnection {
     static final String DB_URL="jdbc:mysql://localhost/mytimescheduler";
     static final String USER="root";
     static final String PASS="";
+
+    /**
+     *
+     * @return
+     */
     public static Connection connectDB()
     {
         try{

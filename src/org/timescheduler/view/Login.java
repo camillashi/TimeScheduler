@@ -17,8 +17,10 @@ import org.timescheduler.task.Reminder;
 
 /**
  * Login frame
- *
+ * User enters his login data, data compared with stored data from database.
+ * User sees calendar form or error message is displayed.
  * @author camil
+ * @version 1.0
  */
 public class Login extends javax.swing.JFrame {
 
